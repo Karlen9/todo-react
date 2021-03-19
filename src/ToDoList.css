@@ -1,0 +1,23 @@
+
+.main-section {
+  
+  background-color: #fff;
+  display: flex;
+  align-items: center;
+  padding: 40px;
+  flex-direction: column;
+  border-radius: 30px;
+  /* margin-top: -400px; */
+  
+}
+
+.wrapper {
+  display: flex;
+  flex-direction: row;
+  margin-top: 20px;
+  justify-content: space-between;
+}
+
+.wrapper h1 {
+  margin-right: 20px;
+}

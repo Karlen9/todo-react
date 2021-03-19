@@ -1,0 +1,18 @@
+.sort {
+  margin-left: 10px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+.arrows {
+  margin-left: 15px;
+}
+
+.sort button{
+  outline: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+}   

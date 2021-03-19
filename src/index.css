@@ -1,0 +1,60 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+
+}
+
+.App {
+  background: radial-gradient((to left bottom,) #ccc, #fff);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.main-section {
+  
+  background-color: #fff;
+  display: flex;
+  align-items: center;
+  padding: 40px;
+  flex-direction: column;
+  border-radius: 30px;
+  /* margin-top: -400px; */
+  
+}
+
+/* .main-input {
+  font-family: "Poppins", sans-serif;
+  padding: .2rem 5rem .2rem .5rem;
+  border: 0;
+  margin: 0 ;
+  outline: 0;
+  height: 2.4rem;
+  font-size: 1.5rem;
+  
+} */
+
+.todolist {
+  font-family: "Poppins", sans-serif;
+}
+
+.main-section h1 {
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
+
+
+
+.todo-item {
+  padding: .2rem 5rem .2rem .5rem;
+}
+
+.MuiFormControl-root {
+  width: 100%;
+}
+
+
+

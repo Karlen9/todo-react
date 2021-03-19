@@ -1,0 +1,23 @@
+.button {
+  font-family: "Poppins";
+  border: none;
+  background-color: #fff;
+  box-shadow: .1rem .1rem .1rem 0 #ccc;
+} 
+
+.button:hover {
+  background-color: #ccc;
+  border: none;
+  cursor: pointer;
+  
+}
+
+.button:active, .button:focus {
+  outline: none;
+  background-color: #ccc;
+}
+
+.selection-bar button{
+  padding: .3rem;
+  margin-right: 5px;
+}
