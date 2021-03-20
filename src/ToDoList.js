@@ -69,8 +69,32 @@ export default function ToDoList() {
     }
   };
 
+  // const handlerEditTodoItem = (e, index) => {
+  //   let updatedTodos = [...todos];
+  //   const completedTodo = updatedTodos.find(e => e.id === index);
+  //   completedTodo.text = 
+  // }
+
+  const saveLocalTodos = () => {
+    localStorage.setItem("todos", JSON.stringify(todos));
+  };
+
+  const getLocalTodos = () => {
+    if (localStorage.getItem("todos") === null) {
+      localStorage.setItem("todos", JSON.stringify([]));
+    } else {
+      let todosLocal = JSON.parse(localStorage.getItem("todos"));
+      setTodos(todosLocal);
+    }
+  };
+
+  useEffect(() => {
+    getLocalTodos();
+  }, []);
+
   useEffect(() => {
     handlerFilterTodos();
+    saveLocalTodos();
   }, [todos, status]);
   
   return (
