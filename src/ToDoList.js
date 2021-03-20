@@ -33,7 +33,7 @@ export default function ToDoList() {
   const handlerSubmitTodo = (e) => {
     e.preventDefault();
     setTodos([
-      ...todos, { text: inputText, completed: false, id: todoId, date: new Date().toLocaleString()} 
+      ...todos, { text: inputText, completed: false, id: todoId, date: new Date().toLocaleString(), isEditing: false} 
     ]);
     setTodoId(todoId + 1);
     setStatus("all");
@@ -88,6 +88,16 @@ export default function ToDoList() {
     }
   };
 
+  const handlerCheckIsEditing = (e, index) => {
+    let updatedTodos = [...todos];
+    const completedTodo = updatedTodos.find(e => e.id === index);
+    completedTodo.isEditing = true;
+    console.log(completedTodo.isEditing);
+    setTodos([...updatedTodos]);
+
+  };
+
+
   useEffect(() => {
     getLocalTodos();
   }, []);
@@ -111,6 +121,7 @@ export default function ToDoList() {
         <Sorting />
       </div>
       <ListBlock 
+        handlerCheckIsEditing = {handlerCheckIsEditing} 
         handlerCheckingCheckBox = {handlerCheckingCheckBox}
         handlerDeleteItem = {handlerDeleteItem}
         filteredTodos = {filteredTodos}
