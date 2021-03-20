@@ -70,11 +70,11 @@ export default function ToDoList() {
     }
   };
 
-  const handlerEditTodoItem = (e) => {
-    let updatedTodos = [...todos];
-    const completedTodo = updatedTodos.find(e => e.isEditing === true);
-    completedTodo.text = 
-  }
+  // const handlerEditTodoItem = (e) => {
+  //   let updatedTodos = [...todos];
+  //   const completedTodo = updatedTodos.find(e => e.isEditing === true);
+  //   completedTodo.text = 
+  // }
 
   const saveLocalTodos = () => {
     localStorage.setItem("todos", JSON.stringify(todos));
