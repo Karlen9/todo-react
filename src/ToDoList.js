@@ -9,6 +9,7 @@ import './ToDoList.css';
 
 export default function ToDoList() {
   const [inputText, setInputText] = useState('');
+  const [editInput, setEditInput] = useState('');
   const [todos, setTodos] = useState([]);
   const [todoId, setTodoId] = useState(0);
   const [filteredTodos, setFilteredTodos] = useState([...todos]);
@@ -69,15 +70,15 @@ export default function ToDoList() {
     }
   };
 
-  // const handlerEditTodoItem = (e, index) => {
-  //   let updatedTodos = [...todos];
-  //   const completedTodo = updatedTodos.find(e => e.id === index);
-  //   completedTodo.text = 
-  // }
+  const handlerEditTodoItem = (e) => {
+    let updatedTodos = [...todos];
+    const completedTodo = updatedTodos.find(e => e.isEditing === true);
+    completedTodo.text = 
+  }
 
   const saveLocalTodos = () => {
     localStorage.setItem("todos", JSON.stringify(todos));
-  };
+  };  
 
   const getLocalTodos = () => {
     if (localStorage.getItem("todos") === null) {
@@ -94,7 +95,6 @@ export default function ToDoList() {
     completedTodo.isEditing = true;
     console.log(completedTodo.isEditing);
     setTodos([...updatedTodos]);
-
   };
 
 

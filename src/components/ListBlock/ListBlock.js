@@ -18,6 +18,7 @@ export default function ListBlock(props) {
             <Checkbox checked={todo.completed} onClick={ (e) => props.handlerCheckingCheckBox(e, todo.id)} color="primary"/>
           </ListItemIcon>
           <ListItemText primary={todo.text} />
+         
           <IconButton onClick={(e) => props.handlerCheckIsEditing(e, todo.id)}  edge="end" aria-label="comments">
             <EditIcon />
           </IconButton>
