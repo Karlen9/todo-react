@@ -17,7 +17,8 @@ export default function ToDoList() {
   const [status, setStatus] = useState("all");
   const [inputVisible, setInputVisible] = useState(false);
 
-  const handlerInputText = (e, index) => {
+
+  const handlerInputText = (e) => {
     if(e.key === "Enter") {
       if(e.target.value.trim() === '') {
         alert('Write some task...');
@@ -49,10 +50,19 @@ export default function ToDoList() {
     }
   }; 
 
+    //date
+    const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
+    "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    const dateObj = new Date();
+    const month = monthNames[dateObj.getMonth()];
+    const day = String(dateObj.getDate()).padStart(2, '0');
+    const year = dateObj.getFullYear();
+    const output = day + '\n'+ month  + '\n' + year;
+
   const handlerSubmitTodo = (e) => {
     e.preventDefault();
     setTodos([
-      ...todos, { text: inputText, completed: false, id: todoId, date: new Date().toLocaleString(), isEditing: false} 
+      ...todos, { text: inputText, completed: false, id: todoId, date: output, isEditing: false} 
     ]);
     setTodoId(todoId + 1);
     setStatus("all");
