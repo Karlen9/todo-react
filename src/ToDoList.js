@@ -1,4 +1,5 @@
 //imports
+import { VerifiedUserRounded } from '@material-ui/icons';
 import React, { useEffect, useState } from 'react';
 import DeleteSelected from './components/DeleteSelected/DeleteSelected';
 import Filtering from './components/Filtering/Filtering';
@@ -14,10 +15,11 @@ export default function ToDoList() {
   const [todoId, setTodoId] = useState(0);
   const [filteredTodos, setFilteredTodos] = useState([...todos]);
   const [status, setStatus] = useState("all");
+  const [inputVisible, setInputVisible] = useState(false);
 
-  const handlerInputText = (e) => {
+  const handlerInputText = (e, index) => {
     if(e.key === "Enter") {
-      if(e.target.value === '') {
+      if(e.target.value.trim() === '') {
         alert('Write some task...');
       } else {
         e.preventDefault();
@@ -30,6 +32,22 @@ export default function ToDoList() {
       setInputText(e.target.value);
     }
   };
+
+  const handlerEditText = (e, index) => {
+    if(e.key === "Enter") {
+      if(e.target.value.trim() === '') {
+        alert('Write some task...');
+      } else {
+        e.preventDefault();
+        setEditInput('');
+        handleChangeItemText(e, index);
+        e.target.value = '';
+      }
+    }
+    else {
+      setEditInput(e.target.value);
+    }
+  }; 
 
   const handlerSubmitTodo = (e) => {
     e.preventDefault();
@@ -44,6 +62,15 @@ export default function ToDoList() {
     e.preventDefault();
     let updatedTodos = [...todos];
     updatedTodos = updatedTodos.filter( el => el.id !== index);
+    setTodos([...updatedTodos]);
+  };
+
+  const handleChangeItemText = (e, index) => {
+    e.preventDefault();
+    let updatedTodos = [...todos];
+    const completedTodo = updatedTodos.find((e) => e.id === index);
+    completedTodo.text = editInput;
+    completedTodo.isEditing = false;
     setTodos([...updatedTodos]);
   };
 
@@ -70,12 +97,6 @@ export default function ToDoList() {
     }
   };
 
-  // const handlerEditTodoItem = (e) => {
-  //   let updatedTodos = [...todos];
-  //   const completedTodo = updatedTodos.find(e => e.isEditing === true);
-  //   completedTodo.text = 
-  // }
-
   const saveLocalTodos = () => {
     localStorage.setItem("todos", JSON.stringify(todos));
   };  
@@ -92,16 +113,22 @@ export default function ToDoList() {
   const handlerCheckIsEditing = (e, index) => {
     let updatedTodos = [...todos];
     const completedTodo = updatedTodos.find(e => e.id === index);
+    console.log(inputVisible);
     completedTodo.isEditing = true;
     console.log(completedTodo.isEditing);
     setTodos([...updatedTodos]);
-  };
+    setInputVisible(true);
+    console.log(inputVisible);
+  };  
+
+
 
 
   useEffect(() => {
     getLocalTodos();
   }, []);
 
+  
   useEffect(() => {
     handlerFilterTodos();
     saveLocalTodos();
@@ -125,6 +152,10 @@ export default function ToDoList() {
         handlerCheckingCheckBox = {handlerCheckingCheckBox}
         handlerDeleteItem = {handlerDeleteItem}
         filteredTodos = {filteredTodos}
+        inputVisible={inputVisible}
+        handlerEditText={handlerEditText}
+        handleChangeItemText={handleChangeItemText}
+        
       />     
       <DeleteSelected 
         handlerDeleteAllItems={handlerDeleteAllItems}

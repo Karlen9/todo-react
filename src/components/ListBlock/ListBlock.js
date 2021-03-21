@@ -5,7 +5,11 @@ import ListItemText from '@material-ui/core/ListItemText';
 import Checkbox from '@material-ui/core/Checkbox';
 import IconButton from '@material-ui/core/IconButton';
 import DeleteIcon from '@material-ui/icons/Delete';
-import EditIcon from '@material-ui/icons/Edit';
+import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
+import EditInput from '../../components/EditInput/EditInput';
+import TextField from '@material-ui/core/TextField';
+
+//import ToDoList from '../../ToDoList';
 import './ListBlock.css';
 
 export default function ListBlock(props) {
@@ -18,9 +22,9 @@ export default function ListBlock(props) {
             <Checkbox checked={todo.completed} onClick={ (e) => props.handlerCheckingCheckBox(e, todo.id)} color="primary"/>
           </ListItemIcon>
           <ListItemText primary={todo.text} />
-         
+          { todo.isEditing ? <TextField className="edit-input" onChange={ (e) => props.handlerEditText(e) } onKeyPress={ (e) => {props.handlerEditText(e, todo.id); }}/> : null }
           <IconButton onClick={(e) => props.handlerCheckIsEditing(e, todo.id)}  edge="end" aria-label="comments">
-            <EditIcon />
+            <EditOutlinedIcon onClick={(e) => props.handlerCheckIsEditing(e, todo.id)}/>  
           </IconButton>
           <IconButton onClick={ (e) => props.handlerDeleteItem(e, todo.id) }  edge="end" aria-label="comments">
             <DeleteIcon />
