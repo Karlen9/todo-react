@@ -21,3 +21,11 @@
   padding: .3rem;
   margin-right: 5px;
 }
+
+
+@media only screen and (max-device-width: 480px) {
+  .selection-bar {
+    display: flex;
+    flex-direction: column;
+  }
+}
