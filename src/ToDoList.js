@@ -1,12 +1,11 @@
 //imports
-import { VerifiedUserRounded } from '@material-ui/icons';
-import Pagination from '@material-ui/lab/Pagination';
 import React, { useEffect, useState } from 'react';
 import DeleteSelected from './components/DeleteSelected/DeleteSelected';
 import Filtering from './components/Filtering/Filtering';
 import InputField from './components/InputField/InputField';
 import ListBlock from './components/ListBlock/ListBlock';
 import Sorting from './components/Sorting/Sorting';
+import Pages from './components/Pages/Pages';
 import './ToDoList.css';
 
 export default function ToDoList() {
@@ -18,10 +17,7 @@ export default function ToDoList() {
   const [status, setStatus] = useState("all");
   const [inputVisible, setInputVisible] = useState(false);
   const [isEmpty, setIsEmpty] = useState(true);
-
-  //date
-  const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
-  "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  const [currPage, setCurrPage] = useState(1);
 
   const handlerInputText = (e) => {
     if(e.key === "Enter") {
@@ -101,10 +97,6 @@ export default function ToDoList() {
       return aTime - bTime;
     });
     setFilteredTodos([...todos]);
-
-    console.log('сорт');
-    console.log([...todos]);
-
   };
 
   const handlerSortDateToDown = () => {
@@ -114,9 +106,6 @@ export default function ToDoList() {
       return bTime - aTime;
     });
     setFilteredTodos([...todos]);
-    console.log('сорт1');
-    console.log([...todos]);
-
   };
 
   const handleChangeItemText = (e, index) => {
@@ -146,30 +135,38 @@ export default function ToDoList() {
     setTodos([...updatedTodos]);
   };
 
-  const handlerFilterTodos = () => {
+  const handlerFilterTodos = (page) => {
+    const updatedTodos = [...todos]
+    const cPage = page - 1;
     if (status === "all") {
-      setFilteredTodos([...todos]);
+      setFilteredTodos([...todos.slice(cPage * 5, cPage * 5 + 5)]);
+      console.log([...filteredTodos]);
+      setStatus("all");
     } else if (status === "done") {
-      setFilteredTodos([...todos.filter(e => e.completed === true)]);
+      setFilteredTodos(updatedTodos.filter(e => e.checked === true).slice(cPage * 5, cPage * 5 + 5));
+      console.log([...filteredTodos]);
     } else if (status === "undone") {
-      setFilteredTodos([...todos.filter(e => e.completed === false)]);
+      setFilteredTodos(updatedTodos.filter(e => e.checked === false).slice(cPage * 5, cPage * 5 + 5));
     }
   };
 
-  const saveLocalTodos = () => {
-    localStorage.setItem("todos", JSON.stringify(todos));
-  };  
 
-  const getLocalTodos = () => {
-    if (localStorage.getItem("todos") === null) {
-      localStorage.setItem("todos", JSON.stringify([]));
-    } else {
-      let todosLocal = JSON.parse(localStorage.getItem("todos"));
-      setTodos(todosLocal);
-    }
-  };
+  //localStorage
+  
+  // const saveLocalTodos = () => {
+  //   localStorage.setItem("todos", JSON.stringify(todos));
+  // };  //
 
-  const handlerCheckIsEditing = (e, index) => {
+  // const getLocalTodos = () => {
+  //   if (localStorage.getItem("todos") === null) {
+  //     localStorage.setItem("todos", JSON.stringify([]));
+  //   } else {
+  //     let todosLocal = JSON.parse(localStorage.getItem("todos"));
+  //     setTodos(todosLocal);
+  //   }
+  // };
+
+  const handlerCheckIsEditing = (index) => {
     let updatedTodos = [...todos];
     const completedTodo = updatedTodos.find(e => e.id === index);
     console.log(inputVisible);
@@ -180,21 +177,48 @@ export default function ToDoList() {
     console.log(inputVisible);
   };  
 
-  useEffect(() => {
-    getLocalTodos();
-  }, []);
+  const handlerPageCounter = (filter) => {
+    const all = Math.ceil(todos.length / 5);
+    const done = Math.ceil(todos.filter(e => e.checked === true).length / 5);
+    const undone = Math.ceil(todos.filter(e => e.checked === false).length / 5);
+    console.log(all, done, undone);
+
+    switch(filter) {
+      case "all": 
+        return all;
+      case "done":
+        return done;
+      case "undone":
+        return undone;
+      default:
+        break;
+    }
+  };
+
+  const handlerPageChange = (page) => {
+    setCurrPage(page);
+  };
+
+  // useEffect(() => {
+  //   //getLocalTodos();
+  // }, []);
 
   
   useEffect(() => {
-    handlerFilterTodos();
-    saveLocalTodos();
+    handlerFilterTodos(currPage);
+    //saveLocalTodos();
   }, [todos, status]);
 
+
   useEffect(() => {
-    handlerSortDateToUp();
-    handlerSortDateToDown();
     handlerSetEmptiness();
   }, [todos]);
+
+  useEffect(() => {
+    handlerPageCounter(status);
+    handlerFilterTodos(currPage);
+
+  }, [status]);
   
   return (
     <section className="main-section">
@@ -221,7 +245,14 @@ export default function ToDoList() {
         handleChangeItemText={handleChangeItemText}
         
       />   
-      <Pagination  count={3}/>
+
+      
+
+      { !isEmpty ? <Pages
+        handlerPageCounter={handlerPageCounter}
+        handlerPageChange={handlerPageChange}
+      /> : null}
+
       { !isEmpty ? <div className="delete-main-section">
         <DeleteSelected 
           handlerDeleteAllItems={handlerDeleteAllItems}
@@ -232,4 +263,4 @@ export default function ToDoList() {
     </section> 
   );
 }
-/////
+ 
