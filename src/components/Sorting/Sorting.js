@@ -9,10 +9,10 @@ export default function Sorting(props) {
        <div className="sort">
           <h3>Sort by Dаte</h3>
           <div className="arrows">
-            <Button variant="contained">
+            <Button onClick={() => props.handlerSortDateToUp()} variant="contained">
               <ImArrowUp className="up-arrow" size="1rem"/>
             </Button>
-            <Button variant="contained">
+            <Button onClick={() => props.handlerSortDateToDown()}variant="contained">
               <ImArrowDown className="down-arrow" size="1rem"/>
             </Button>
           </div>

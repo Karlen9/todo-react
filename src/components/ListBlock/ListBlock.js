@@ -22,7 +22,7 @@ export default function ListBlock(props) {
             <Checkbox checked={todo.completed} onClick={ (e) => props.handlerCheckingCheckBox(e, todo.id)} color="primary"/>
           </ListItemIcon>
           <ListItemText primary={todo.text} />
-          { todo.isEditing ? <TextField className="edit-input" onChange={ (e) => props.handlerEditText(e) } onKeyPress={ (e) => {props.handlerEditText(e, todo.id); }}/> : null }
+          { todo.isEditing ? <TextField className="edit-input" onKeyDown={(e) => props.handlerEscapeEdition(e, todo.id)} onChange={ (e) => props.handlerEditText(e) } onKeyPress={ (e) => {props.handlerEditText(e, todo.id); }}/> : null }
           <p className="date">{todo.date}</p>
           <IconButton onClick={(e) => props.handlerCheckIsEditing(e, todo.id)}  edge="end" aria-label="comments">
             <EditOutlinedIcon onClick={(e) => props.handlerCheckIsEditing(e, todo.id)}/>  

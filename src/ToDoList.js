@@ -1,5 +1,6 @@
 //imports
 import { VerifiedUserRounded } from '@material-ui/icons';
+import Pagination from '@material-ui/lab/Pagination';
 import React, { useEffect, useState } from 'react';
 import DeleteSelected from './components/DeleteSelected/DeleteSelected';
 import Filtering from './components/Filtering/Filtering';
@@ -18,6 +19,9 @@ export default function ToDoList() {
   const [inputVisible, setInputVisible] = useState(false);
   const [isEmpty, setIsEmpty] = useState(true);
 
+  //date
+  const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
+  "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
   const handlerInputText = (e) => {
     if(e.key === "Enter") {
@@ -49,11 +53,19 @@ export default function ToDoList() {
     else {
       setEditInput(e.target.value);
     }
-  }; 
+  };
 
-    //date
-    const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
-    "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  const handlerEscapeEdition = (e, index) => {
+    if(e.key === "Escape") {
+      let updatedTodos = [...todos];
+      e.preventDefault();
+      setEditInput(inputText);
+      const element = updatedTodos.find(e => e.id === index);
+      const prevElement = todos.find( e => e.id === index);
+      element.text = prevElement.text;
+      element.isEditing = false;
+    }
+  }
 
   const handlerSubmitTodo = (e) => {
     e.preventDefault();
@@ -63,7 +75,7 @@ export default function ToDoList() {
     const year = dateObj.getFullYear();
     const output = day + '\n'+ month  + '\n' + year;
     setTodos([
-      ...todos, { text: inputText, completed: false, id: todoId, date: output, isEditing: false} 
+      ...todos, { text: inputText, completed: false, id: todoId, date: new Date().toLocaleString(), isEditing: false} 
     ]);
     setTodoId(todoId + 1);
     setStatus("all");
@@ -85,6 +97,24 @@ export default function ToDoList() {
     let updatedTodos = [...todos];
     updatedTodos = updatedTodos.filter( el => el.id !== index);
     setTodos([...updatedTodos]);
+  };
+
+  const handlerSortDateToUp = () => {
+    todos.sort((a, b) => {
+      const aTime = a.date;
+      const bTime = b.date;
+      return aTime -bTime;
+    });
+    console.log('сорт');
+  };
+
+  const handlerSortDateToDown = () => {
+    todos.sort((a, b) => {
+      const aTime = a.date;
+      const bTime = b.date;
+      return bTime - aTime;
+    });
+    console.log('сорт1');
   };
 
   const handleChangeItemText = (e, index) => {
@@ -112,8 +142,7 @@ export default function ToDoList() {
     let updatedTodos = [...todos];
     updatedTodos = updatedTodos.filter(e => e.completed === false);
     setTodos([...updatedTodos]);
-  }
-
+  };
 
   const handlerFilterTodos = () => {
     if (status === "all") {
@@ -160,6 +189,7 @@ export default function ToDoList() {
   }, [todos, status]);
 
   useEffect(() => {
+    handlerSortDateToUp();
     handlerSetEmptiness();
   }, [todos]);
   
@@ -174,10 +204,11 @@ export default function ToDoList() {
         <Filtering 
           setStatus = {setStatus}
         />
-        <Sorting />
+        <Sorting handlerSortDateToUp={handlerSortDateToUp} handlerSortDateToDown={handlerSortDateToDown}/>
       </div> : null}
       
       <ListBlock 
+        handlerEscapeEdition={handlerEscapeEdition}
         handlerCheckIsEditing = {handlerCheckIsEditing} 
         handlerCheckingCheckBox = {handlerCheckingCheckBox}
         handlerDeleteItem = {handlerDeleteItem}
@@ -187,6 +218,7 @@ export default function ToDoList() {
         handleChangeItemText={handleChangeItemText}
         
       />   
+      <Pagination  count={3}/>
       { !isEmpty ? <div className="delete-main-section">
         <DeleteSelected 
           handlerDeleteAllItems={handlerDeleteAllItems}
