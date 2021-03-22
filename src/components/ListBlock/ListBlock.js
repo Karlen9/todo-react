@@ -23,7 +23,7 @@ export default function ListBlock(props) {
           </ListItemIcon>
           <ListItemText primary={todo.text} />
           { todo.isEditing ? <TextField className="edit-input" onKeyDown={(e) => props.handlerEscapeEdition(e, todo.id)} onChange={ (e) => props.handlerEditText(e) } onKeyPress={ (e) => {props.handlerEditText(e, todo.id); }}/> : null }
-          <p className="date">{todo.date}</p>
+          <p className="date">{todo.date.toLocaleString()}</p>
           <IconButton onClick={(e) => props.handlerCheckIsEditing(e, todo.id)}  edge="end" aria-label="comments">
             <EditOutlinedIcon onClick={(e) => props.handlerCheckIsEditing(e, todo.id)}/>  
           </IconButton>

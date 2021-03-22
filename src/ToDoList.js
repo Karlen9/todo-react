@@ -69,13 +69,8 @@ export default function ToDoList() {
 
   const handlerSubmitTodo = (e) => {
     e.preventDefault();
-    const dateObj = new Date();
-    const month = monthNames[dateObj.getMonth()];
-    const day = String(dateObj.getDate()).padStart(2, '0');
-    const year = dateObj.getFullYear();
-    const output = day + '\n'+ month  + '\n' + year;
     setTodos([
-      ...todos, { text: inputText, completed: false, id: todoId, date: new Date().toLocaleString(), isEditing: false} 
+      ...todos, { text: inputText, completed: false, id: todoId, date: new Date(), isEditing: false} 
     ]);
     setTodoId(todoId + 1);
     setStatus("all");
@@ -103,9 +98,13 @@ export default function ToDoList() {
     todos.sort((a, b) => {
       const aTime = a.date;
       const bTime = b.date;
-      return aTime -bTime;
+      return aTime - bTime;
     });
+    setFilteredTodos([...todos]);
+
     console.log('сорт');
+    console.log([...todos]);
+
   };
 
   const handlerSortDateToDown = () => {
@@ -114,7 +113,10 @@ export default function ToDoList() {
       const bTime = b.date;
       return bTime - aTime;
     });
+    setFilteredTodos([...todos]);
     console.log('сорт1');
+    console.log([...todos]);
+
   };
 
   const handleChangeItemText = (e, index) => {
@@ -190,6 +192,7 @@ export default function ToDoList() {
 
   useEffect(() => {
     handlerSortDateToUp();
+    handlerSortDateToDown();
     handlerSetEmptiness();
   }, [todos]);
   
