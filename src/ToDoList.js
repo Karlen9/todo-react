@@ -107,6 +107,13 @@ export default function ToDoList() {
     setTodos([]);
   };
 
+  const handlerDeleteSelectedItems = (e) => {
+    e.preventDefault();
+    let updatedTodos = [...todos];
+    updatedTodos = updatedTodos.filter(e => e.completed === false);
+    setTodos([...updatedTodos]);
+  }
+
 
   const handlerFilterTodos = () => {
     if (status === "all") {
@@ -141,9 +148,6 @@ export default function ToDoList() {
     setInputVisible(true);
     console.log(inputVisible);
   };  
-
-
-
 
   useEffect(() => {
     getLocalTodos();
@@ -186,6 +190,7 @@ export default function ToDoList() {
       { !isEmpty ? <div className="delete-main-section">
         <DeleteSelected 
           handlerDeleteAllItems={handlerDeleteAllItems}
+          handlerDeleteSelectedItems={handlerDeleteSelectedItems}
         />
       </div> : null}
        
