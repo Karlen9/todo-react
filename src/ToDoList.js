@@ -151,7 +151,7 @@ export default function ToDoList() {
 
   // const saveLocalTodos = () => {
   //   localStorage.setItem("todos", JSON.stringify(todos));
-  // };  
+  // };  //
 
   // const getLocalTodos = () => {
   //   if (localStorage.getItem("todos") === null) {
