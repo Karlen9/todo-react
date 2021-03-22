@@ -7,7 +7,7 @@ export default function Sorting(props) {
   return (
     <div>
        <div className="sort">
-          <h3>Sort by Date</h3>
+          <h3>Sort by Dаte</h3>
           <div className="arrows">
             <Button variant="contained">
               <ImArrowUp className="up-arrow" size="1rem"/>

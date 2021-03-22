@@ -16,6 +16,7 @@ export default function ToDoList() {
   const [filteredTodos, setFilteredTodos] = useState([...todos]);
   const [status, setStatus] = useState("all");
   const [inputVisible, setInputVisible] = useState(false);
+  const [isEmpty, setIsEmpty] = useState(true);
 
 
   const handlerInputText = (e) => {
@@ -53,19 +54,30 @@ export default function ToDoList() {
     //date
     const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
     "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+  const handlerSubmitTodo = (e) => {
+    e.preventDefault();
     const dateObj = new Date();
     const month = monthNames[dateObj.getMonth()];
     const day = String(dateObj.getDate()).padStart(2, '0');
     const year = dateObj.getFullYear();
     const output = day + '\n'+ month  + '\n' + year;
-
-  const handlerSubmitTodo = (e) => {
-    e.preventDefault();
     setTodos([
       ...todos, { text: inputText, completed: false, id: todoId, date: output, isEditing: false} 
     ]);
     setTodoId(todoId + 1);
     setStatus("all");
+    
+  };
+
+  const handlerSetEmptiness = () => {
+    if (todos.length === 0) {
+      setIsEmpty(true);
+      console.log(isEmpty);
+    } else if (todos !== 0){
+      setIsEmpty(false);
+      console.log(isEmpty);
+    }
   };
 
   const handlerDeleteItem = (e, index) => {
@@ -93,7 +105,6 @@ export default function ToDoList() {
 
   const handlerDeleteAllItems = () => {
     setTodos([]);
-
   };
 
 
@@ -143,6 +154,10 @@ export default function ToDoList() {
     handlerFilterTodos();
     saveLocalTodos();
   }, [todos, status]);
+
+  useEffect(() => {
+    handlerSetEmptiness();
+  }, [todos]);
   
   return (
     <section className="main-section">
@@ -151,12 +166,13 @@ export default function ToDoList() {
         handlerInputText = {handlerInputText}
         inputText= {inputText}
       />
-      <div className="wrapper">
+      { !isEmpty ? <div className="wrapper">
         <Filtering 
           setStatus = {setStatus}
         />
         <Sorting />
-      </div>
+      </div> : null}
+      
       <ListBlock 
         handlerCheckIsEditing = {handlerCheckIsEditing} 
         handlerCheckingCheckBox = {handlerCheckingCheckBox}
@@ -166,10 +182,13 @@ export default function ToDoList() {
         handlerEditText={handlerEditText}
         handleChangeItemText={handleChangeItemText}
         
-      />     
-      <DeleteSelected 
-        handlerDeleteAllItems={handlerDeleteAllItems}
-      />
+      />   
+      { !isEmpty ? <div className="delete-main-section">
+        <DeleteSelected 
+          handlerDeleteAllItems={handlerDeleteAllItems}
+        />
+      </div> : null}
+       
     </section> 
   );
 }
