@@ -15,14 +15,15 @@ export default function ToDoList() {
   const [todos, setTodos] = useState([]);
   const [todoId, setTodoId] = useState(0);
   const [filteredTodos, setFilteredTodos] = useState([...todos]);
-  const [status, setStatus] = useState("all");
+  const [status, setStatus] = useState('all');
   const [inputVisible, setInputVisible] = useState(false);
   const [isEmpty, setIsEmpty] = useState(true);
   const [currPage, setCurrPage] = useState(1);
   const [amountOfPages, setAmountOfPages] = useState(1);
+  const [sortTrigger, setSortTrigger] = useState('asc');
 
   const handlerInputText = (e) => {
-    if(e.key === "Enter") {
+    if(e.key === 'Enter') {
       if(e.target.value.trim() === '') {
         alert('Write some task...');
       } else {
@@ -38,7 +39,7 @@ export default function ToDoList() {
   };
 
   const handlerEditText = (e, index) => {
-    if(e.key === "Enter") {
+    if(e.key === 'Enter') {
       if(e.target.value.trim() === '') {
         alert('Write some task...');
       } else {
@@ -54,7 +55,7 @@ export default function ToDoList() {
   };
 
   const handlerEscapeEdition = (e, index) => {
-    if(e.key === "Escape") {
+    if(e.key === 'Escape') {
       let updatedTodos = [...todos];
       e.preventDefault();
       setEditInput(inputText);
@@ -85,7 +86,7 @@ export default function ToDoList() {
   async function makeGetRequest() {
     const {data} = await axios.get(process.env.REACT_APP_GET_URL, {
       params:{
-        order: 'asc', 
+        order: sortTrigger, 
         filterBy: status
       }});
     setTodos(data.map((item, index) => ( {id: index, text: item.name, completed: item.done, date: item.createdAt, uuid: item.uuid, isEditing: item.isEditing})));
@@ -109,26 +110,11 @@ export default function ToDoList() {
   };
 
   const handlerSortDateToUp = () => {
-    filteredTodos.sort((a, b) => {
-      const aTime = a.date;
-      const bTime = b.date;
-      return aTime - bTime;
-    });
+    setSortTrigger('asc');
   };
 
   const handlerSortDateToDown = () => {
-
-    async function makeDateRequest() {
-      const req = axios.get(process.env.REACT_APP_GET_URL, );
-
-    }
-
-    filteredTodos.sort((a, b) => {
-      const aTime = a.date;
-      const bTime = b.date;
-      return bTime - aTime;
-    });
-
+    setSortTrigger('desc');
   };
 
   const handleChangeItemText = (e, index) => {
@@ -148,11 +134,6 @@ export default function ToDoList() {
   };
 
   const handlerDeleteAllItems = () => {
-
-    // async function deleteItemsRequest() {
-    //   const todo = todos;
-    //   const del = await axios.delete('https://todo-api-learning.herokuapp.com/v1/tasks/3?order=asc', todo)
-    // }
     setTodos([]);
   };
 
@@ -166,20 +147,20 @@ export default function ToDoList() {
   const handlerFilterTodos = (status, page) => {
     const cPage = page - 1;
     switch(status) {
-      case "all":
+      case 'all':
         setFilteredTodos([...todos.slice(cPage * 5, cPage * 5 + 5)]);
-        setStatus("all");
+        setStatus('all');
 
         break;
-      case "done":
+      case 'done':
         setFilteredTodos([...todos.filter(e => e.completed === true).slice(cPage * 5, cPage * 5 + 5)]);
-        setStatus("done");
+        setStatus('done');
         handlerFilterTodos();
 
         break;
-      case "undone":
+      case 'undone':
         setFilteredTodos([...todos.filter(e => e.completed === false).slice(cPage * 5, cPage * 5 + 5)]);
-        setStatus("undone");
+        setStatus('undone');
         handlerFilterTodos();
 
         break;
@@ -265,13 +246,13 @@ export default function ToDoList() {
   }, [status, todos]);
   
   return (
-    <section className="main-section">
+    <section className='main-section'>
       <h1>ToDo</h1>
       <InputField
         handlerInputText = {handlerInputText}
         inputText= {inputText}
       />
-      { !isEmpty ? <div className="wrapper">
+      { !isEmpty ? <div className='wrapper'>
         <Filtering 
           setStatus = {setStatus}
         />
@@ -296,7 +277,7 @@ export default function ToDoList() {
         amountOfPages={amountOfPages}
       /> : null }
 
-      { !isEmpty ? <div className="delete-main-section">
+      { !isEmpty ? <div className='delete-main-section'>
         <DeleteSelected 
           handlerDeleteAllItems={handlerDeleteAllItems}
           handlerDeleteSelectedItems={handlerDeleteSelectedItems}
