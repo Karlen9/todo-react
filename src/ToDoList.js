@@ -1,5 +1,6 @@
 //imports
 import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 import DeleteSelected from './components/DeleteSelected/DeleteSelected';
 import Filtering from './components/Filtering/Filtering';
 import InputField from './components/InputField/InputField';
@@ -65,14 +66,30 @@ export default function ToDoList() {
   }
 
   const handlerSubmitTodo = (e) => {
-    e.preventDefault();
-    setTodos([
-      ...todos, { text: inputText, completed: false, id: todoId, date: new Date(), isEditing: false} 
-    ]);
-    setTodoId(todoId + 1);
-    setStatus("all");
-    
+    // e.preventDefault();
+    // setTodos([
+    //   ...todos, { text: inputText, completed: false, id: todoId, date: new Date(), } 
+    // ]);
+    // setTodoId(todoId + 1);
+    // setStatus("all");
+
+    async function makePostRequest() {
+      console.log('hello');
+      const todo = {name: inputText, done: false, isEditing: false};
+      const res = await axios.post(process.env.REACT_APP_POST_URL, todo);
+      makeGetRequest();
+    }
+    makePostRequest();
   };
+
+  async function makeGetRequest() {
+    const {data} = await axios.get(process.env.REACT_APP_GET_URL, {
+      params:{
+        order: 'asc', 
+        filterBy: status
+      }});
+    setTodos(data.map((item, index) => ( {id: index, text: item.name, completed: item.done, date: item.createdAt, uuid: item.uuid, isEditing: item.isEditing})));
+  }
 
   const handlerSetEmptiness = () => {
     if (todos.length === 0) {
@@ -100,6 +117,12 @@ export default function ToDoList() {
   };
 
   const handlerSortDateToDown = () => {
+
+    async function makeDateRequest() {
+      const req = axios.get(process.env.REACT_APP_GET_URL, );
+
+    }
+
     filteredTodos.sort((a, b) => {
       const aTime = a.date;
       const bTime = b.date;
@@ -125,6 +148,11 @@ export default function ToDoList() {
   };
 
   const handlerDeleteAllItems = () => {
+
+    // async function deleteItemsRequest() {
+    //   const todo = todos;
+    //   const del = await axios.delete('https://todo-api-learning.herokuapp.com/v1/tasks/3?order=asc', todo)
+    // }
     setTodos([]);
   };
 
@@ -219,6 +247,7 @@ export default function ToDoList() {
 
   useEffect(() => {
     handlerSetEmptiness();
+
   }, [todos]);
 
   useEffect(() => {
