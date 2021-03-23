@@ -1,12 +1,11 @@
 //imports
-import { VerifiedUserRounded } from '@material-ui/icons';
-import Pagination from '@material-ui/lab/Pagination';
 import React, { useEffect, useState } from 'react';
 import DeleteSelected from './components/DeleteSelected/DeleteSelected';
 import Filtering from './components/Filtering/Filtering';
 import InputField from './components/InputField/InputField';
 import ListBlock from './components/ListBlock/ListBlock';
 import Sorting from './components/Sorting/Sorting';
+import Pages from './components/Pages/Pages';
 import './ToDoList.css';
 
 export default function ToDoList() {
@@ -18,10 +17,8 @@ export default function ToDoList() {
   const [status, setStatus] = useState("all");
   const [inputVisible, setInputVisible] = useState(false);
   const [isEmpty, setIsEmpty] = useState(true);
-
-  //date
-  const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
-  "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  const [currPage, setCurrPage] = useState(1);
+  const [amountOfPages, setAmountOfPages] = useState(1);
 
   const handlerInputText = (e) => {
     if(e.key === "Enter") {
@@ -95,27 +92,19 @@ export default function ToDoList() {
   };
 
   const handlerSortDateToUp = () => {
-    todos.sort((a, b) => {
+    filteredTodos.sort((a, b) => {
       const aTime = a.date;
       const bTime = b.date;
       return aTime - bTime;
     });
-    setFilteredTodos([...todos]);
-
-    console.log('сорт');
-    console.log([...todos]);
-
   };
 
   const handlerSortDateToDown = () => {
-    todos.sort((a, b) => {
+    filteredTodos.sort((a, b) => {
       const aTime = a.date;
       const bTime = b.date;
       return bTime - aTime;
     });
-    setFilteredTodos([...todos]);
-    console.log('сорт1');
-    console.log([...todos]);
 
   };
 
@@ -146,28 +135,59 @@ export default function ToDoList() {
     setTodos([...updatedTodos]);
   };
 
-  const handlerFilterTodos = () => {
-    if (status === "all") {
-      setFilteredTodos([...todos]);
-    } else if (status === "done") {
-      setFilteredTodos([...todos.filter(e => e.completed === true)]);
-    } else if (status === "undone") {
-      setFilteredTodos([...todos.filter(e => e.completed === false)]);
+  const handlerFilterTodos = (status, page) => {
+    const cPage = page - 1;
+    switch(status) {
+      case "all":
+        setFilteredTodos([...todos.slice(cPage * 5, cPage * 5 + 5)]);
+        setStatus("all");
+        console.log(filteredTodos);
+        console.log('-----------------');
+        console.log(todos);
+        console.log('------------------------------------------------------------');
+
+
+        break;
+      case "done":
+        setFilteredTodos([...todos.filter(e => e.completed === true).slice(cPage * 5, cPage * 5 + 5)]);
+        setStatus("done");
+        handlerFilterTodos();
+
+        console.log(filteredTodos);
+        console.log('-----------------');
+        console.log(todos);
+        console.log('------------------------------------------------------------');
+
+        break;
+      case "undone":
+        setFilteredTodos([...todos.filter(e => e.completed === false).slice(cPage * 5, cPage * 5 + 5)]);
+        setStatus("undone");
+        handlerFilterTodos();
+
+        console.log(filteredTodos);
+        console.log('-----------------');
+        console.log(todos);
+        console.log('------------------------------------------------------------');
+
+        break;
     }
   };
 
-  const saveLocalTodos = () => {
-    localStorage.setItem("todos", JSON.stringify(todos));
-  };  
 
-  const getLocalTodos = () => {
-    if (localStorage.getItem("todos") === null) {
-      localStorage.setItem("todos", JSON.stringify([]));
-    } else {
-      let todosLocal = JSON.parse(localStorage.getItem("todos"));
-      setTodos(todosLocal);
-    }
-  };
+  //localStorage
+  
+  // const saveLocalTodos = () => {
+  //   localStorage.setItem("todos", JSON.stringify(todos));
+  // };  //
+
+  // const getLocalTodos = () => {
+  //   if (localStorage.getItem("todos") === null) {
+  //     localStorage.setItem("todos", JSON.stringify([]));
+  //   } else {
+  //     let todosLocal = JSON.parse(localStorage.getItem("todos"));
+  //     setTodos(todosLocal);
+  //   }
+  // };
 
   const handlerCheckIsEditing = (e, index) => {
     let updatedTodos = [...todos];
@@ -180,21 +200,55 @@ export default function ToDoList() {
     console.log(inputVisible);
   };  
 
-  useEffect(() => {
-    getLocalTodos();
-  }, []);
+  const handlerPageCounter = (stat) => {
+    switch(stat) {
+      case "all":
+        setAmountOfPages(Math.ceil(todos.length / 5));
+        console.log(amountOfPages);
+        break;
+      case "done":
+        setAmountOfPages(Math.ceil(todos.filter(e => e.completed === true).length / 5));
+        break;
+      case "undone":
+        setAmountOfPages(Math.ceil(todos.filter(e => e.completed === false).length / 5));
+        break;
+      default:
+        break;
+    }
+  };
+
+  const handlerPageChange = (e, page) => {
+    setCurrPage(page);
+  };
+
+
+  // useEffect(() => {
+  //   //getLocalTodos();
+  // }, []);
 
   
   useEffect(() => {
-    handlerFilterTodos();
-    saveLocalTodos();
+    handlerFilterTodos(status, currPage);
+    //saveLocalTodos();
   }, [todos, status]);
 
+
   useEffect(() => {
-    handlerSortDateToUp();
-    handlerSortDateToDown();
     handlerSetEmptiness();
   }, [todos]);
+
+  useEffect(() => {
+    handlerFilterTodos(status, currPage);
+  }, [currPage]);
+
+  useEffect(() => {
+    handlerFilterTodos(status, currPage);
+
+  }, [status]);
+
+  useEffect(() => {
+    handlerPageCounter(status);
+  }, [status, todos]);
   
   return (
     <section className="main-section">
@@ -220,8 +274,14 @@ export default function ToDoList() {
         handlerEditText={handlerEditText}
         handleChangeItemText={handleChangeItemText}
         
-      />   
-      <Pagination  count={3}/>
+      />  
+
+      { !isEmpty ? <Pages
+        handlerPageCounter={handlerPageCounter}
+        handlerPageChange={handlerPageChange}
+        amountOfPages={amountOfPages}
+      /> : null }
+
       { !isEmpty ? <div className="delete-main-section">
         <DeleteSelected 
           handlerDeleteAllItems={handlerDeleteAllItems}
@@ -232,4 +292,4 @@ export default function ToDoList() {
     </section> 
   );
 }
-/////
+ 

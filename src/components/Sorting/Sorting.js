@@ -1,7 +1,7 @@
 import Button from '@material-ui/core/Button';
 import { ImArrowUp } from 'react-icons/im';
 import { ImArrowDown } from 'react-icons/im';
-import './Sorting.css';
+import './sorting.css';
 
 export default function Sorting(props) {  
   return (
