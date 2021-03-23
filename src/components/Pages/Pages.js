@@ -1,14 +1,11 @@
-import Pagination from '@material-ui/lab/Pagination';
+import './pages.css';
+import Pagination from "@material-ui/lab/Pagination";
 
-
-export default function Pages({handlePageChange, handlerPageCounter}) {  
+export default function Pages({handlerPageChange, handlerPageCount, amountOfPages}) {
   return (
-    <div>
-      <Pagination 
-        onChange={handlePageChange}
-        className="pages"
-        count={handlerPageCounter}
-      />
-    </div>
-  );
+    <Pagination 
+      onChange={handlerPageChange}
+      count={amountOfPages}
+    />
+  )
 }

@@ -13,3 +13,10 @@
 .all-button {
   padding: .3rem .3rem .3rem .3rem;
 }
+
+
+@media only screen and (max-width: 480px) {
+  .MuiIconButton-label {
+    width: 1rem;
+  }
+}

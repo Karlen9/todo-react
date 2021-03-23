@@ -6,10 +6,11 @@ import Checkbox from '@material-ui/core/Checkbox';
 import IconButton from '@material-ui/core/IconButton';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
+import EditInput from '../../components/EditInput/EditInput';
 import TextField from '@material-ui/core/TextField';
 
 //import ToDoList from '../../ToDoList';
-import './ListBlock.css';
+import './listblock.css';
 
 export default function ListBlock(props) {
   return (
@@ -22,7 +23,7 @@ export default function ListBlock(props) {
           </ListItemIcon>
           <ListItemText primary={todo.text} />
           { todo.isEditing ? <TextField className="edit-input" onKeyDown={(e) => props.handlerEscapeEdition(e, todo.id)} onChange={ (e) => props.handlerEditText(e) } onKeyPress={ (e) => {props.handlerEditText(e, todo.id); }}/> : null }
-          <p className="date">{todo.date.toLocaleTimeString()}</p>
+          <p className="date">{todo.date.toLocaleString()}</p>
           <IconButton onClick={(e) => props.handlerCheckIsEditing(e, todo.id)}  edge="end" aria-label="comments">
             <EditOutlinedIcon onClick={(e) => props.handlerCheckIsEditing(e, todo.id)}/>  
           </IconButton>

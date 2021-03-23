@@ -18,6 +18,7 @@ export default function ToDoList() {
   const [inputVisible, setInputVisible] = useState(false);
   const [isEmpty, setIsEmpty] = useState(true);
   const [currPage, setCurrPage] = useState(1);
+  const [amountOfPages, setAmountOfPages] = useState(1);
 
   const handlerInputText = (e) => {
     if(e.key === "Enter") {
@@ -91,21 +92,20 @@ export default function ToDoList() {
   };
 
   const handlerSortDateToUp = () => {
-    todos.sort((a, b) => {
+    filteredTodos.sort((a, b) => {
       const aTime = a.date;
       const bTime = b.date;
       return aTime - bTime;
     });
-    setFilteredTodos([...todos]);
   };
 
   const handlerSortDateToDown = () => {
-    todos.sort((a, b) => {
+    filteredTodos.sort((a, b) => {
       const aTime = a.date;
       const bTime = b.date;
       return bTime - aTime;
     });
-    setFilteredTodos([...todos]);
+
   };
 
   const handleChangeItemText = (e, index) => {
@@ -135,22 +135,62 @@ export default function ToDoList() {
     setTodos([...updatedTodos]);
   };
 
-  const handlerFilterTodos = (page) => {
+  const handlerFilterTodos = (status, page) => {
     const cPage = page - 1;
-    if (status === "all") {
-      setFilteredTodos([...todos.slice(cPage * 5, cPage * 5 + 5)]);
-      console.log([...filteredTodos]);
-      setStatus("all");
-    } else if (status === "done") {
-      setFilteredTodos([...todos.slice(cPage * 5, cPage * 5 + 5).filter(e => e.completed === true)]);
-      console.log([...filteredTodos]);
-    } else if (status === "undone") {
-      setFilteredTodos([...todos.slice(cPage * 5, cPage * 5 + 5).filter(e => e.completed === false)]);
+    switch(status) {
+      case "all":
+        setFilteredTodos([...todos.slice(cPage * 5, cPage * 5 + 5)]);
+        setStatus("all");
+
+        break;
+      case "done":
+        setFilteredTodos([...todos.filter(e => e.completed === true).slice(cPage * 5, cPage * 5 + 5)]);
+        setStatus("done");
+        handlerFilterTodos();
+
+        break;
+      case "undone":
+        setFilteredTodos([...todos.filter(e => e.completed === false).slice(cPage * 5, cPage * 5 + 5)]);
+        setStatus("undone");
+        handlerFilterTodos();
+
+        break;
     }
   };
 
+  const handlerCheckIsEditing = (e, index) => {
+    let updatedTodos = [...todos];
+    const completedTodo = updatedTodos.find(e => e.id === index);
+    console.log(inputVisible);
+    completedTodo.isEditing = true;
+    console.log(completedTodo.isEditing);
+    setTodos([...updatedTodos]);
+    setInputVisible(true);
+    console.log(inputVisible);
+  };  
 
-  //localStorage
+  const handlerPageCounter = (stat) => {
+    switch(stat) {
+      case "all":
+        setAmountOfPages(Math.ceil(todos.length / 5));
+        console.log(amountOfPages);
+        break;
+      case "done":
+        setAmountOfPages(Math.ceil(todos.filter(e => e.completed === true).length / 5));
+        break;
+      case "undone":
+        setAmountOfPages(Math.ceil(todos.filter(e => e.completed === false).length / 5));
+        break;
+      default:
+        break;
+    }
+  };
+
+  const handlerPageChange = (e, page) => {
+    setCurrPage(page);
+  };
+
+    //localStorage
   
   // const saveLocalTodos = () => {
   //   localStorage.setItem("todos", JSON.stringify(todos));
@@ -165,30 +205,6 @@ export default function ToDoList() {
   //   }
   // };
 
-  const handlerCheckIsEditing = (index) => {
-    let updatedTodos = [...todos];
-    const completedTodo = updatedTodos.find(e => e.id === index);
-    console.log(inputVisible);
-    completedTodo.isEditing = true;
-    console.log(completedTodo.isEditing);
-    setTodos([...updatedTodos]);
-    setInputVisible(true);
-    console.log(inputVisible);
-  };  
-
-  const handlerPageCounter = () => {
-    if (status === "all") {
-      return Math.ceil(filteredTodos.length / 5);
-    } else if ( status === "done") {
-      return Math.ceil(filteredTodos.length / 5);
-    } else if (status === "undone") {
-      return Math.ceil(filteredTodos.length / 5);
-    }
-  };
-
-  const handlerPageChange = (page) => {
-    setCurrPage(page);
-  };
 
   // useEffect(() => {
   //   //getLocalTodos();
@@ -196,23 +212,28 @@ export default function ToDoList() {
 
   
   useEffect(() => {
-    handlerFilterTodos(currPage);
+    handlerFilterTodos(status, currPage);
     //saveLocalTodos();
   }, [todos, status]);
 
-  useEffect(() => {
-    handlerFilterTodos(currPage);
-  }, [currPage]);
 
   useEffect(() => {
-    handlerSortDateToUp();
-    handlerSortDateToDown();
     handlerSetEmptiness();
   }, [todos]);
 
   useEffect(() => {
-    handlerPageCounter();
-  }, [filteredTodos]);
+    handlerFilterTodos(status, currPage);
+  }, [currPage]);
+
+  useEffect(() => {
+    handlerFilterTodos(status, currPage);
+    setCurrPage(1);
+
+  }, [status]);
+
+  useEffect(() => {
+    handlerPageCounter(status);
+  }, [status, todos]);
   
   return (
     <section className="main-section">
@@ -238,12 +259,14 @@ export default function ToDoList() {
         handlerEditText={handlerEditText}
         handleChangeItemText={handleChangeItemText}
         
-      />   
+      />  
 
-      <Pages
+      { !isEmpty ? <Pages
         handlerPageCounter={handlerPageCounter}
         handlerPageChange={handlerPageChange}
-      />
+        amountOfPages={amountOfPages}
+      /> : null }
+
       { !isEmpty ? <div className="delete-main-section">
         <DeleteSelected 
           handlerDeleteAllItems={handlerDeleteAllItems}
