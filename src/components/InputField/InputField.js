@@ -1,5 +1,5 @@
 import TextField from '@material-ui/core/TextField';
-import './InputField.css';
+import './inputfield.css';
 
 export default function InputField(props) {  
   return (

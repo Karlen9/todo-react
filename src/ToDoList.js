@@ -141,11 +141,6 @@ export default function ToDoList() {
       case "all":
         setFilteredTodos([...todos.slice(cPage * 5, cPage * 5 + 5)]);
         setStatus("all");
-        console.log(filteredTodos);
-        console.log('-----------------');
-        console.log(todos);
-        console.log('------------------------------------------------------------');
-
 
         break;
       case "done":
@@ -153,41 +148,15 @@ export default function ToDoList() {
         setStatus("done");
         handlerFilterTodos();
 
-        console.log(filteredTodos);
-        console.log('-----------------');
-        console.log(todos);
-        console.log('------------------------------------------------------------');
-
         break;
       case "undone":
         setFilteredTodos([...todos.filter(e => e.completed === false).slice(cPage * 5, cPage * 5 + 5)]);
         setStatus("undone");
         handlerFilterTodos();
 
-        console.log(filteredTodos);
-        console.log('-----------------');
-        console.log(todos);
-        console.log('------------------------------------------------------------');
-
         break;
     }
   };
-
-
-  //localStorage
-  
-  // const saveLocalTodos = () => {
-  //   localStorage.setItem("todos", JSON.stringify(todos));
-  // };  //
-
-  // const getLocalTodos = () => {
-  //   if (localStorage.getItem("todos") === null) {
-  //     localStorage.setItem("todos", JSON.stringify([]));
-  //   } else {
-  //     let todosLocal = JSON.parse(localStorage.getItem("todos"));
-  //     setTodos(todosLocal);
-  //   }
-  // };
 
   const handlerCheckIsEditing = (e, index) => {
     let updatedTodos = [...todos];
@@ -221,6 +190,21 @@ export default function ToDoList() {
     setCurrPage(page);
   };
 
+    //localStorage
+  
+  // const saveLocalTodos = () => {
+  //   localStorage.setItem("todos", JSON.stringify(todos));
+  // };  //
+
+  // const getLocalTodos = () => {
+  //   if (localStorage.getItem("todos") === null) {
+  //     localStorage.setItem("todos", JSON.stringify([]));
+  //   } else {
+  //     let todosLocal = JSON.parse(localStorage.getItem("todos"));
+  //     setTodos(todosLocal);
+  //   }
+  // };
+
 
   // useEffect(() => {
   //   //getLocalTodos();
@@ -243,6 +227,7 @@ export default function ToDoList() {
 
   useEffect(() => {
     handlerFilterTodos(status, currPage);
+    setCurrPage(1);
 
   }, [status]);
 
