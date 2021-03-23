@@ -9,6 +9,7 @@ import Sorting from './components/Sorting/Sorting';
 import Pages from './components/Pages/Pages';
 import './ToDoList.css';
 
+
 export default function ToDoList() {
   const [inputText, setInputText] = useState('');
   const [editInput, setEditInput] = useState('');
@@ -103,10 +104,22 @@ export default function ToDoList() {
   };
 
   const handlerDeleteItem = (e, index) => {
-    e.preventDefault();
-    let updatedTodos = [...todos];
-    updatedTodos = updatedTodos.filter( el => el.id !== index);
-    setTodos([...updatedTodos]);
+    // e.preventDefault();
+    // let updatedTodos = [...todos];
+    // updatedTodos = updatedTodos.filter( el => el.id !== index);
+    // setTodos([...updatedTodos]);
+
+    const deletingItem = todos.find(e => e.id === index);
+
+    async function deleteItem() {
+
+      const element = await axios.delete(`https://todo-api-learning.herokuapp.com/v1/task/3/` + deletingItem.uuid);
+      makeGetRequest();
+      console.log(element);
+
+    }
+
+    deleteItem();
   };
 
   const handlerSortDateToUp = () => {
