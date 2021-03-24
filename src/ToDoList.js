@@ -125,14 +125,16 @@ export default function ToDoList() {
 
     const editingItem = todos.find(e => e.id === index);
 
-    editItemRequest(editingItem, EditInput, "name");
+    editItemRequest(editingItem, editInput);
 
     editingItem.isEditing = false;
+
+    makeGetRequest();
 
   };
 
   async function editItemRequest(item, itemName) {
-    await axios.patch(`https://todo-api-learning.herokuapp.com/v1/task` + item.uuid,
+    await axios.patch(`https://todo-api-learning.herokuapp.com/v1/task/3/` + item.uuid,
       {
         name: itemName
       }
