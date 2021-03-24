@@ -8,6 +8,7 @@ import ListBlock from './components/ListBlock/ListBlock';
 import Sorting from './components/Sorting/Sorting';
 import Pages from './components/Pages/Pages';
 import './ToDoList.css';
+import EditInput from './components/EditInput/EditInput';
 
 
 export default function ToDoList() {
@@ -103,6 +104,45 @@ export default function ToDoList() {
     }
   };
 
+  const handlerSortDateToUp = () => {
+    setSortTrigger('asc');
+  };
+
+  const handlerSortDateToDown = () => {
+    setSortTrigger('desc');
+  };
+
+  const handleChangeItemText = (e, index) => {
+    // e.preventDefault();
+    // let updatedTodos = [...todos];
+    // const completedTodo = updatedTodos.find((e) => e.id === index);
+    // completedTodo.text = editInput;
+    // completedTodo.isEditing = false;
+    // setTodos([...updatedTodos]);
+
+    const editingItem = todos.find(e => e.id === index);
+
+    editItemRequest(editingItem, EditInput, "name");
+
+    editingItem.isEditing = false;
+
+  };
+
+  async function editItemRequest(item, itemName) {
+    await axios.patch(`https://todo-api-learning.herokuapp.com/v1/task` + item.uuid,
+      {
+        name: itemName
+      }
+    );
+  }
+
+  const handlerCheckingCheckBox = (e, index) => {
+    let updatedTodos = [...todos];
+    const completedTodo = updatedTodos.find(e => e.id === index);
+    completedTodo.completed = e.target.checked;
+    setTodos([...updatedTodos]);
+  };
+
   const handlerDeleteItem = (e, index) => {
     // e.preventDefault();
     // let updatedTodos = [...todos];
@@ -122,32 +162,21 @@ export default function ToDoList() {
     deleteItem();
   };
 
-  const handlerSortDateToUp = () => {
-    setSortTrigger('asc');
-  };
-
-  const handlerSortDateToDown = () => {
-    setSortTrigger('desc');
-  };
-
-  const handleChangeItemText = (e, index) => {
-    e.preventDefault();
-    let updatedTodos = [...todos];
-    const completedTodo = updatedTodos.find((e) => e.id === index);
-    completedTodo.text = editInput;
-    completedTodo.isEditing = false;
-    setTodos([...updatedTodos]);
-  };
-
-  const handlerCheckingCheckBox = (e, index) => {
-    let updatedTodos = [...todos];
-    const completedTodo = updatedTodos.find(e => e.id === index);
-    completedTodo.completed = e.target.checked;
-    setTodos([...updatedTodos]);
-  };
-
   const handlerDeleteAllItems = () => {
     setTodos([]);
+  };
+
+  const handlerDeleteAllServerItems = () => {
+    for(let i = 0; i < todos.length; i++) {
+      const deletingItem = todos.find(e => e.id === i);
+
+      async function deleteItem() {
+        const element = await axios.delete(`https://todo-api-learning.herokuapp.com/v1/task/3/` + deletingItem.uuid);
+        makeGetRequest();
+        console.log(element);
+      }
+      deleteItem();
+    }
   };
 
   const handlerDeleteSelectedItems = (e) => {
@@ -292,6 +321,7 @@ export default function ToDoList() {
 
       { !isEmpty ? <div className='delete-main-section'>
         <DeleteSelected 
+          handlerDeleteAllServerItems={handlerDeleteAllServerItems}
           handlerDeleteAllItems={handlerDeleteAllItems}
           handlerDeleteSelectedItems={handlerDeleteSelectedItems}
         />
