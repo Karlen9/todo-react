@@ -7,6 +7,7 @@ import InputField from './components/InputField/InputField';
 import ListBlock from './components/ListBlock/ListBlock';
 import Sorting from './components/Sorting/Sorting';
 import Pages from './components/Pages/Pages';
+import { IconButton, Snackbar } from '@material-ui/core';
 import './ToDoList.css';
 import EditInput from './components/EditInput/EditInput';
 
@@ -15,7 +16,7 @@ export default function ToDoList() {
   const [inputText, setInputText] = useState('');
   const [editInput, setEditInput] = useState('');
   const [todos, setTodos] = useState([]);
-  const [todoId, setTodoId] = useState(0);
+  //const [todoId, setTodoId] = useState(0);
   const [filteredTodos, setFilteredTodos] = useState([...todos]);
   const [status, setStatus] = useState('all');
   const [inputVisible, setInputVisible] = useState(false);
@@ -23,6 +24,9 @@ export default function ToDoList() {
   const [currPage, setCurrPage] = useState(1);
   const [amountOfPages, setAmountOfPages] = useState(1);
   const [sortTrigger, setSortTrigger] = useState('asc');
+  const [errMessage, setErrMessage] = useState('');
+  const [isError, setIsError] = useState(false);
+
 
   const handlerInputText = (e) => {
     if(e.key === 'Enter') {
@@ -77,30 +81,37 @@ export default function ToDoList() {
     // setStatus("all");
 
     async function makePostRequest() {
-      console.log('hello');
-      const todo = {name: inputText, done: false, isEditing: false};
-      const res = await axios.post(`https://todo-api-learning.herokuapp.com/v1/task/3`, todo);
-      makeGetRequest();
+      try {
+        console.log('hello');
+        const todo = {name: inputText, done: false, isEditing: false};
+        const res = await axios.post(`https://todo-api-learning.herokuapp.com/v1/task/3`, todo);
+        makeGetRequest();
+      } catch (error) {
+        handlerErrors(error);
+      }
     }
     makePostRequest();
   };
 
   async function makeGetRequest() {
-    const {data} = await axios.get(`https://todo-api-learning.herokuapp.com/v1/tasks/3`, {
+
+    try {
+      const {data} = await axios.get(`https://todo-api-learning.herokuapp.com/v1/tasks/3`, {
       params:{
         order: sortTrigger, 
         filterBy: status
       }});
     setTodos(data.map((item, index) => ( {id: index, text: item.name, completed: item.done, date: item.createdAt, uuid: item.uuid, isEditing: item.isEditing})));
+    } catch (error) {
+      handlerErrors(error);
+    }
   }
 
   const handlerSetEmptiness = () => {
     if (todos.length === 0) {
       setIsEmpty(true);
-      console.log(isEmpty);
     } else if (todos !== 0){
       setIsEmpty(false);
-      console.log(isEmpty);
     }
   };
 
@@ -134,11 +145,16 @@ export default function ToDoList() {
   };
 
   async function editItemRequest(item, itemName) {
-    await axios.patch(`https://todo-api-learning.herokuapp.com/v1/task/3/` + item.uuid,
-      {
-        name: itemName
-      }
-    );
+    try {
+      await axios.patch(`https://todo-api-learning.herokuapp.com/v1/task/3/` + item.uuid,
+        {
+          name: itemName
+        }
+      );
+    } catch (error) {
+      handlerErrors(error);
+    }
+    
   }
 
   const handlerCheckingCheckBox = (e, index) => {
@@ -157,10 +173,12 @@ export default function ToDoList() {
     const deletingItem = todos.find(e => e.id === index);
 
     async function deleteItem() {
-
-      const element = await axios.delete(`https://todo-api-learning.herokuapp.com/v1/task/3/` + deletingItem.uuid);
-      makeGetRequest();
-      console.log(element);
+      try {
+        const element = await axios.delete(`https://todo-api-learning.herokuapp.com/v1/task/3/` + deletingItem.uuid);
+        makeGetRequest();
+      } catch (error) {
+        handlerErrors(error);
+      }
 
     }
 
@@ -172,15 +190,18 @@ export default function ToDoList() {
   };
 
   const handlerDeleteAllServerItems = () => {
-    for(let i = 0; i < todos.length; i++) {
-      const deletingItem = todos.find(e => e.id === i);
-
-      async function deleteItem() {
-        const element = await axios.delete(`https://todo-api-learning.herokuapp.com/v1/task/3/` + deletingItem.uuid);
-        makeGetRequest();
-        console.log(element);
+    try {
+      for(let i = 0; i < todos.length; i++) {
+        const deletingItem = todos.find(e => e.id === i);
+  
+        async function deleteItem() {
+          const element = await axios.delete(`https://todo-api-learning.herokuapp.com/v1/task/3/` + deletingItem.uuid);
+          makeGetRequest();
+        }
+        deleteItem();
       }
-      deleteItem();
+    } catch (error) {
+      handlerErrors(error);
     }
   };
 
@@ -217,19 +238,15 @@ export default function ToDoList() {
   const handlerCheckIsEditing = (e, index) => {
     let updatedTodos = [...todos];
     const completedTodo = updatedTodos.find(e => e.id === index);
-    console.log(inputVisible);
     completedTodo.isEditing = true;
-    console.log(completedTodo.isEditing);
     setTodos([...updatedTodos]);
     setInputVisible(true);
-    console.log(inputVisible);
   };  
 
   const handlerPageCounter = (stat) => {
     switch(stat) {
       case "all":
         setAmountOfPages(Math.ceil(todos.length / 5));
-        console.log(amountOfPages);
         break;
       case "done":
         setAmountOfPages(Math.ceil(todos.filter(e => e.completed === true).length / 5));
@@ -244,6 +261,23 @@ export default function ToDoList() {
 
   const handlerPageChange = (e, page) => {
     setCurrPage(page);
+  };
+
+  const handlerErrors = (err) => {
+    if(err.response) {
+      setIsError(true);
+      console.log(errMessage);
+
+      console.log(isError);
+
+      setErrMessage(err.message);
+    } else if(err.request) {
+      setIsError(true);
+      console.log(isError);
+      console.log(errMessage);
+
+      setErrMessage('Problem with Request!');
+    } 
   };
 
     //localStorage
@@ -275,8 +309,15 @@ export default function ToDoList() {
 
   useEffect(() => {
     handlerSetEmptiness();
-
   }, [todos]);
+
+  useEffect(() => {
+
+  }, []);
+
+  // useEffect(() => {
+  //   setIsError(true);
+  // }, [errMessage]);
 
   useEffect(() => {
     handlerFilterTodos(status, currPage);
@@ -332,6 +373,12 @@ export default function ToDoList() {
         />
       </div> : null}
        
+      { isError ? 
+      <Snackbar 
+        open={isError} 
+        message={errMessage} 
+      />
+      : null }
     </section> 
   );
 }
