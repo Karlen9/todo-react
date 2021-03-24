@@ -79,14 +79,14 @@ export default function ToDoList() {
     async function makePostRequest() {
       console.log('hello');
       const todo = {name: inputText, done: false, isEditing: false};
-      const res = await axios.post(process.env.REACT_APP_POST_URL, todo);
+      const res = await axios.post(`https://todo-api-learning.herokuapp.com/v1/task/3`, todo);
       makeGetRequest();
     }
     makePostRequest();
   };
 
   async function makeGetRequest() {
-    const {data} = await axios.get(process.env.REACT_APP_GET_URL, {
+    const {data} = await axios.get(`https://todo-api-learning.herokuapp.com/v1/tasks/3`, {
       params:{
         order: sortTrigger, 
         filterBy: status
