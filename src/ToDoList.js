@@ -106,10 +106,13 @@ export default function ToDoList() {
 
   const handlerSortDateToUp = () => {
     setSortTrigger('asc');
+    makeGetRequest();
+
   };
 
   const handlerSortDateToDown = () => {
     setSortTrigger('desc');
+    makeGetRequest();
   };
 
   const handleChangeItemText = (e, index) => {
