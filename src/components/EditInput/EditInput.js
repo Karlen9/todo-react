@@ -1,3 +1,5 @@
+import './editinput.css';
+
 
 export default function EditInput(props) {
   return (
