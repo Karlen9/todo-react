@@ -19,6 +19,7 @@ export default function ToDoList() {
   const [isEmpty, setIsEmpty] = useState(true);
   const [currPage, setCurrPage] = useState(1);
   const [amountOfPages, setAmountOfPages] = useState(1);
+  const [sortPage, setSortPage] = useState([]);
 
   const handlerInputText = (e) => {
     if(e.key === "Enter") {
@@ -92,21 +93,29 @@ export default function ToDoList() {
   };
 
   const handlerSortDateToUp = () => {
-    filteredTodos.sort((a, b) => {
+    let updatedTodos = todos;
+    const newTodos = updatedTodos.sort((a, b) => {
       const aTime = a.date;
       const bTime = b.date;
       return aTime - bTime;
     });
+    setFilteredTodos(newTodos);
+    handlerFilterTodos(status, currPage);
+
   };
 
   const handlerSortDateToDown = () => {
-    filteredTodos.sort((a, b) => {
+    let updatedTodos = todos;
+    const newTodos = updatedTodos.sort((a, b) => {
       const aTime = a.date;
       const bTime = b.date;
       return bTime - aTime;
     });
+    setFilteredTodos(newTodos);
+    handlerFilterTodos(status, currPage);
 
   };
+
 
   const handleChangeItemText = (e, index) => {
     e.preventDefault();
@@ -140,6 +149,7 @@ export default function ToDoList() {
     switch(status) {
       case "all":
         setFilteredTodos([...todos.slice(cPage * 5, cPage * 5 + 5)]);
+        setSortPage([filteredTodos]);
         setStatus("all");
 
         break;
@@ -158,15 +168,13 @@ export default function ToDoList() {
     }
   };
 
+
   const handlerCheckIsEditing = (e, index) => {
     let updatedTodos = [...todos];
     const completedTodo = updatedTodos.find(e => e.id === index);
-    console.log(inputVisible);
     completedTodo.isEditing = true;
-    console.log(completedTodo.isEditing);
     setTodos([...updatedTodos]);
     setInputVisible(true);
-    console.log(inputVisible);
   };  
 
   const handlerPageCounter = (stat) => {
