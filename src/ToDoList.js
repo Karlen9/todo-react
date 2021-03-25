@@ -10,6 +10,7 @@ import Pages from './components/Pages/Pages';
 import { IconButton, Snackbar } from '@material-ui/core';
 import './ToDoList.css';
 import EditInput from './components/EditInput/EditInput';
+import Alert from '@material-ui/lab/Alert';
 
 
 export default function ToDoList() {
@@ -376,8 +377,13 @@ export default function ToDoList() {
       { isError ? 
       <Snackbar 
         open={isError} 
-        message={errMessage} 
-      />
+        onClose={() => setIsError(false)}
+        autoHideDuration={5000}
+        >
+        <Alert onClose={() => setIsError(false)} severity="error">
+          {errMessage} 
+        </Alert>
+      </Snackbar>
       : null }
     </section> 
   );
