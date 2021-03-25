@@ -9,7 +9,6 @@ import Sorting from './components/Sorting/Sorting';
 import Pages from './components/Pages/Pages';
 import { IconButton, Snackbar } from '@material-ui/core';
 import './ToDoList.css';
-import EditInput from './components/EditInput/EditInput';
 import Alert from '@material-ui/lab/Alert';
 
 
@@ -85,7 +84,7 @@ export default function ToDoList() {
       try {
         console.log('hello');
         const todo = {name: inputText, done: false, isEditing: false};
-        const res = await axios.post(`https://todo-api-learning.herokuapp.com/v1/task/3`, todo);
+        const res = await axios.post(process.env.REACT_APP_POST_URL, todo);
         makeGetRequest();
       } catch (error) {
         handlerErrors(error);
@@ -97,7 +96,7 @@ export default function ToDoList() {
   async function makeGetRequest() {
 
     try {
-      const {data} = await axios.get(`https://todo-api-learning.herokuapp.com/v1/tasks/3`, {
+      const {data} = await axios.get(process.env.REACT_APP_GET_URL , {
       params:{
         order: sortTrigger, 
         filterBy: status
@@ -147,7 +146,7 @@ export default function ToDoList() {
 
   async function editItemRequest(item, itemName) {
     try {
-      await axios.patch(`https://todo-api-learning.herokuapp.com/v1/task/3/` + item.uuid,
+      await axios.patch(process.env.REACT_APP_PATCH_URL  + item.uuid,
         {
           name: itemName
         }
@@ -175,7 +174,7 @@ export default function ToDoList() {
 
     async function deleteItem() {
       try {
-        const element = await axios.delete(`https://todo-api-learning.herokuapp.com/v1/task/3/` + deletingItem.uuid);
+        const element = await axios.delete(process.env.REACT_APP_DELETE_URL + deletingItem.uuid);
         makeGetRequest();
       } catch (error) {
         handlerErrors(error);
@@ -196,7 +195,7 @@ export default function ToDoList() {
         const deletingItem = todos.find(e => e.id === i);
   
         async function deleteItem() {
-          const element = await axios.delete(`https://todo-api-learning.herokuapp.com/v1/task/3/` + deletingItem.uuid);
+          const element = await axios.delete(process.env.REACT_APP_DELETE_URL + deletingItem.uuid);
           makeGetRequest();
         }
         deleteItem();
