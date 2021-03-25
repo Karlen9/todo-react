@@ -1,4 +1,4 @@
-import './deleteSelected.css';
+import './deleteselected.css';
 
 
 export default function DeleteSelected(props) {
