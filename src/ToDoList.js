@@ -10,6 +10,7 @@ import Pages from './components/Pages/Pages';
 import { IconButton, Snackbar } from '@material-ui/core';
 import './ToDoList.css';
 import Alert from '@material-ui/lab/Alert';
+import { CommentSharp } from '@material-ui/icons';
 
 
 export default function ToDoList() {
@@ -80,31 +81,33 @@ export default function ToDoList() {
     // setTodoId(todoId + 1);
     // setStatus("all");
 
-    async function makePostRequest() {
-      try {
-        console.log('hello');
+    async function postItemRequest() {
+      //try {
+        console.log('posted');
         const todo = {name: inputText, done: false, isEditing: false};
         const res = await axios.post(process.env.REACT_APP_POST_URL, todo);
-        makeGetRequest();
-      } catch (error) {
-        handlerErrors(error);
-      }
+        getItemRequest();
+      //} catch (error) {
+        //handlerErrors(error);
+      //}
     }
-    makePostRequest();
+    postItemRequest();
   };
 
-  async function makeGetRequest() {
+  async function getItemRequest() {
 
-    try {
-      const {data} = await axios.get(process.env.REACT_APP_GET_URL , {
+    //try {
+      const test = await axios.get(process.env.REACT_APP_GET_URL, 
+      {
       params:{
-        order: sortTrigger, 
-        filterBy: status
+        order: sortTrigger.toString(), 
+        filterBy: status.toString
       }});
-    setTodos(data.map((item, index) => ( {id: index, text: item.name, completed: item.done, date: item.createdAt, uuid: item.uuid, isEditing: item.isEditing})));
-    } catch (error) {
-      handlerErrors(error);
-    }
+      console.log(test);
+    // setTodos(data.map((item, index) => ( {id: index, text: item.name, completed: item.done, date: item.createdAt, uuid: item.uuid, isEditing: item.isEditing})));
+    //} catch (error) {
+      //handlerErrors(error);
+    //}
   }
 
   const handlerSetEmptiness = () => {
@@ -117,13 +120,13 @@ export default function ToDoList() {
 
   const handlerSortDateToUp = () => {
     setSortTrigger('asc');
-    makeGetRequest();
+    getItemRequest();
 
   };
 
   const handlerSortDateToDown = () => {
     setSortTrigger('desc');
-    makeGetRequest();
+    getItemRequest();
   };
 
   const handleChangeItemText = (e, index) => {
@@ -140,20 +143,20 @@ export default function ToDoList() {
 
     editingItem.isEditing = false;
 
-    makeGetRequest();
+    getItemRequest();
 
   };
 
   async function editItemRequest(item, itemName) {
-    try {
+    //try {
       await axios.patch(process.env.REACT_APP_PATCH_URL  + item.uuid,
         {
           name: itemName
         }
       );
-    } catch (error) {
-      handlerErrors(error);
-    }
+    //} catch (error) {
+      //handlerErrors(error);
+    //}
     
   }
 
@@ -173,12 +176,12 @@ export default function ToDoList() {
     const deletingItem = todos.find(e => e.id === index);
 
     async function deleteItem() {
-      try {
+      //try {
         const element = await axios.delete(process.env.REACT_APP_DELETE_URL + deletingItem.uuid);
-        makeGetRequest();
-      } catch (error) {
-        handlerErrors(error);
-      }
+        getItemRequest();
+      //} catch (error) {
+        //handlerErrors(error);
+      //}
 
     }
 
@@ -190,19 +193,19 @@ export default function ToDoList() {
   };
 
   const handlerDeleteAllServerItems = () => {
-    try {
+    //try {
       for(let i = 0; i < todos.length; i++) {
         const deletingItem = todos.find(e => e.id === i);
   
         async function deleteItem() {
           const element = await axios.delete(process.env.REACT_APP_DELETE_URL + deletingItem.uuid);
-          makeGetRequest();
+          getItemRequest();
         }
         deleteItem();
       }
-    } catch (error) {
-      handlerErrors(error);
-    }
+   // } catch (error) {
+      //handlerErrors(error);
+    //}
   };
 
   const handlerDeleteSelectedItems = (e) => {
@@ -231,6 +234,9 @@ export default function ToDoList() {
         setStatus('undone');
         handlerFilterTodos();
 
+        break;
+
+      default:
         break;
     }
   };
@@ -281,14 +287,19 @@ export default function ToDoList() {
   };
 
 
-  // axios.interceptors.request.use(function (config) {
-  //   // Do something before request is sent
-  // }, function (error) {
-  //   // Do something with request error
-  //   setErrMessage(Promise.reject(error));
-  // });
+  axios.interceptors.response.use(function (response) {
+    // Do something before request is sent\
+    
+  }, (error) => {
+    if (error.response){
+      setErrMessage(error.response.data.message);
+      setIsError(true);
+    }
+    return Promise.reject(error);
+  });
 
-    //localStorage
+
+  //localStorage
   
   // const saveLocalTodos = () => {
   //   localStorage.setItem("todos", JSON.stringify(todos));
@@ -298,12 +309,7 @@ export default function ToDoList() {
   //   if (localStorage.getItem("todos") === null) {
   //     localStorage.setItem("todos", JSON.stringify([]));
   //   } else {
-  //     let todosLocal = JSON.parse(localStorage.getItem("todos"));
-  //     setTodos(todosLocal);
-  //   }
-  // };
-
-
+  //     let todosLocal = JSON.parse(locatest
   // useEffect(() => {
   //   //getLocalTodos();
   // }, []);
