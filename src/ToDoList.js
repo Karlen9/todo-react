@@ -85,8 +85,8 @@ export default function ToDoList() {
       //try {
         console.log('posted');
         const todo = {name: inputText, done: false, isEditing: false};
-        const res = await axios.post(process.env.REACT_APP_POST_URL, todo);
-        getItemRequest();
+        const res = await axios.post(`https://todo-api-learning.herokuapp.com/v1/task/3`, todo);
+        getItem();
       //} catch (error) {
         //handlerErrors(error);
       //}
@@ -94,17 +94,16 @@ export default function ToDoList() {
     postItemRequest();
   };
 
-  async function getItemRequest() {
+  async function getItem() {
 
     //try {
-      const test = await axios.get(process.env.REACT_APP_GET_URL, 
-      {
-      params:{
-        order: sortTrigger.toString(), 
-        filterBy: status.toString
+      const {data} = await axios.get(process.env.REACT_APP_GET, {
+        params:{
+          order: sortTrigger, 
+          filterBy: status
       }});
-      console.log(test);
-    // setTodos(data.map((item, index) => ( {id: index, text: item.name, completed: item.done, date: item.createdAt, uuid: item.uuid, isEditing: item.isEditing})));
+      console.log(data);
+    setTodos(data.map((item, index) => ( {id: index, text: item.name, completed: item.done, date: item.createdAt, uuid: item.uuid, isEditing: item.isEditing})));
     //} catch (error) {
       //handlerErrors(error);
     //}
@@ -120,13 +119,13 @@ export default function ToDoList() {
 
   const handlerSortDateToUp = () => {
     setSortTrigger('asc');
-    getItemRequest();
+    getItem();
 
   };
 
   const handlerSortDateToDown = () => {
     setSortTrigger('desc');
-    getItemRequest();
+    getItem();
   };
 
   const handleChangeItemText = (e, index) => {
@@ -143,13 +142,13 @@ export default function ToDoList() {
 
     editingItem.isEditing = false;
 
-    getItemRequest();
+    getItem();
 
   };
 
   async function editItemRequest(item, itemName) {
     //try {
-      await axios.patch(process.env.REACT_APP_PATCH_URL  + item.uuid,
+      await axios.patch(process.env.REACT_APP_PATCH  + item.uuid,
         {
           name: itemName
         }
@@ -177,8 +176,8 @@ export default function ToDoList() {
 
     async function deleteItem() {
       //try {
-        const element = await axios.delete(process.env.REACT_APP_DELETE_URL + deletingItem.uuid);
-        getItemRequest();
+        const element = await axios.delete(process.env.REACT_APP_DELETE + deletingItem.uuid);
+        getItem();
       //} catch (error) {
         //handlerErrors(error);
       //}
@@ -198,8 +197,8 @@ export default function ToDoList() {
         const deletingItem = todos.find(e => e.id === i);
   
         async function deleteItem() {
-          const element = await axios.delete(process.env.REACT_APP_DELETE_URL + deletingItem.uuid);
-          getItemRequest();
+          const element = await axios.delete(process.env.REACT_APP_DELETE + deletingItem.uuid);
+          getItem();
         }
         deleteItem();
       }
@@ -289,7 +288,7 @@ export default function ToDoList() {
 
   axios.interceptors.response.use(function (response) {
     // Do something before request is sent\
-    
+    return response;
   }, (error) => {
     if (error.response){
       setErrMessage(error.response.data.message);
