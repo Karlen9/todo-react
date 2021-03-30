@@ -152,7 +152,7 @@ export default function ToDoList() {
 
   async function editItemRequest(item, itemName) {
     //try {
-      await axios.patch(API_URL + 'task/' + item.uuid,
+      await axios.patch(API_URL + '/task/' + item.uuid,
         {
           name: itemName
         }
