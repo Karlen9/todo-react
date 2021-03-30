@@ -29,6 +29,8 @@ export default function ToDoList() {
   const [isError, setIsError] = useState(false);
 
   const API_URL = process.env.REACT_APP_URL;
+  const API_URL_GET = process.env.REACT_APP_URL_GET;
+  
 
   const handlerInputText = (e) => {
     if(e.key === 'Enter') {
@@ -98,7 +100,7 @@ export default function ToDoList() {
   async function getItem() {
 
     //try {
-      const {data} = await axios.get(API_URL, '/tasks', {
+      const {data} = await axios.get(API_URL_GET, {
         params:{
           order: sortTrigger, 
           filterBy: status
