@@ -28,8 +28,6 @@ export default function ToDoList() {
   const [errMessage, setErrMessage] = useState('');
   const [isError, setIsError] = useState(false);
 
-
-  const API_GET = process.env.REACT_APP_URL_GET;
   const API_URL = process.env.REACT_APP_URL;
 
   const handlerInputText = (e) => {
@@ -88,7 +86,7 @@ export default function ToDoList() {
       //try {
         console.log('posted');
         const todo = {name: inputText, done: false, isEditing: false};
-        const res = await axios.post(API_URL, todo);
+        const res = await axios.post(API_URL + '/task' , todo);
         getItem();
       //} catch (error) {
         //handlerErrors(error);
@@ -100,7 +98,7 @@ export default function ToDoList() {
   async function getItem() {
 
     //try {
-      const {data} = await axios.get(API_GET, {
+      const {data} = await axios.get(API_URL, '/tasks', {
         params:{
           order: sortTrigger, 
           filterBy: status
@@ -151,7 +149,7 @@ export default function ToDoList() {
 
   async function editItemRequest(item, itemName) {
     //try {
-      await axios.patch(API_URL  + item.uuid,
+      await axios.patch(API_URL + 'task/' + item.uuid,
         {
           name: itemName
         }
@@ -179,7 +177,7 @@ export default function ToDoList() {
 
     async function deleteItem() {
       //try {
-        const element = await axios.delete(API_URL + deletingItem.uuid);
+        const element = await axios.delete(API_URL + '/task/' + deletingItem.uuid);
         getItem();
       //} catch (error) {
         //handlerErrors(error);
@@ -200,7 +198,7 @@ export default function ToDoList() {
         const deletingItem = todos.find(e => e.id === i);
   
         async function deleteItem() {
-          const element = await axios.delete(API_URL + deletingItem.uuid);
+          const element = await axios.delete(API_URL + '/task/' + deletingItem.uuid);
           getItem();
         }
         deleteItem();
