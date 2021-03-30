@@ -296,7 +296,7 @@ export default function ToDoList() {
     return response;
   }, (error) => {
     if (error.response){
-      setErrMessage(error.response.data.message);
+      setErrMessage(error.response.errors);
       setIsError(true);
     }
     return Promise.reject(error);
