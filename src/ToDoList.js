@@ -106,7 +106,8 @@ export default function ToDoList() {
           filterBy: status
       }});
       console.log(data);
-    setTodos(data.map((item, index) => ( {id: index, text: item.name, completed: item.done, date: item.createdAt, uuid: item.uuid, isEditing: item.isEditing})));
+    setTodos(data.map((item, index) => ( {id: index, text: item.name, completed: item.done, date: item.createdAt, uuid: item.id, isEditing: item.isEditing})));
+    
     //} catch (error) {
       //handlerErrors(error);
     //}
@@ -180,6 +181,7 @@ export default function ToDoList() {
     async function deleteItem() {
       //try {
         const element = await axios.delete(API_URL + '/task/' + deletingItem.uuid);
+        console.log(deleteItem.uuid);
         getItem();
       //} catch (error) {
         //handlerErrors(error);
@@ -311,7 +313,8 @@ export default function ToDoList() {
   //   if (localStorage.getItem("todos") === null) {
   //     localStorage.setItem("todos", JSON.stringify([]));
   //   } else {
-  //     let todosLocal = JSON.parse(locatest
+  //     let todosLocal = J￼￼
+  //SON.parse(locatest
   // useEffect(() => {
   //   //getLocalTodos();
   // }, []);
