@@ -29,6 +29,9 @@ export default function ToDoList() {
   const [isError, setIsError] = useState(false);
 
 
+  const API_GET = process.env.REACT_APP_URL_GET;
+  const API_URL = process.env.REACT_APP_URL;
+
   const handlerInputText = (e) => {
     if(e.key === 'Enter') {
       if(e.target.value.trim() === '') {
@@ -97,7 +100,7 @@ export default function ToDoList() {
   async function getItem() {
 
     //try {
-      const {data} = await axios.get(process.env.REACT_APP_GET, {
+      const {data} = await axios.get(API_GET, {
         params:{
           order: sortTrigger, 
           filterBy: status
@@ -148,7 +151,7 @@ export default function ToDoList() {
 
   async function editItemRequest(item, itemName) {
     //try {
-      await axios.patch(process.env.REACT_APP_PATCH  + item.uuid,
+      await axios.patch(API_URL  + item.uuid,
         {
           name: itemName
         }
@@ -176,7 +179,7 @@ export default function ToDoList() {
 
     async function deleteItem() {
       //try {
-        const element = await axios.delete(process.env.REACT_APP_DELETE + deletingItem.uuid);
+        const element = await axios.delete(API_URL + deletingItem.uuid);
         getItem();
       //} catch (error) {
         //handlerErrors(error);
@@ -197,7 +200,7 @@ export default function ToDoList() {
         const deletingItem = todos.find(e => e.id === i);
   
         async function deleteItem() {
-          const element = await axios.delete(process.env.REACT_APP_DELETE + deletingItem.uuid);
+          const element = await axios.delete(API_URL + deletingItem.uuid);
           getItem();
         }
         deleteItem();
