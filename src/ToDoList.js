@@ -291,12 +291,13 @@ export default function ToDoList() {
   };
 
 
-  axios.interceptors.response.use(function (response) {
+  axios.interceptors.response.use((response) => {
     // Do something before request is sent\
     return response;
   }, (error) => {
     if (error.response){
-      setErrMessage(error.response.errors);
+      setErrMessage(error.message);
+      console.log(error.message);
       setIsError(true);
     }
     return Promise.reject(error);
@@ -331,7 +332,7 @@ export default function ToDoList() {
   }, [todos]);
 
   useEffect(() => {
-
+    getItem();
   }, []);
 
   // useEffect(() => {
@@ -347,6 +348,10 @@ export default function ToDoList() {
     setCurrPage(1);
 
   }, [status]);
+
+  useEffect(() => {
+
+  })
 
   useEffect(() => {
     handlerPageCounter(status);
