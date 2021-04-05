@@ -82,7 +82,7 @@ export default function ToDoList() {
     async function postItemRequest() {
       //try {
       console.log("posted");
-      const todo = { name: inputText, done: false, isEditing: false };
+      const todo = { name: inputText, done: false };
       const res = await axios.post(API_URL + "/task", todo);
       getItem();
       //} catch (error) {
@@ -103,7 +103,7 @@ export default function ToDoList() {
     });
     console.log(data);
     setTodos(
-      data.map((item, index) => ({
+      data.rows.map((item, index) => ({
         id: index,
         text: item.name,
         completed: item.done,
@@ -286,23 +286,6 @@ export default function ToDoList() {
 
   const handlerPageChange = (e, page) => {
     setCurrPage(page);
-  };
-
-  const handlerErrors = (err) => {
-    if (err.response) {
-      setIsError(true);
-      console.log(errMessage);
-
-      console.log(isError);
-
-      setErrMessage(err.message);
-    } else if (err.request) {
-      setIsError(true);
-      console.log(isError);
-      console.log(errMessage);
-
-      setErrMessage("Problem with Request!");
-    }
   };
 
   axios.interceptors.response.use(
