@@ -26,8 +26,8 @@ export default function ToDoList() {
   const [errMessage, setErrMessage] = useState("");
   const [isError, setIsError] = useState(false);
 
-  const API_URL = process.env.REACT_APP_URL;
-  const API_URL_GET = process.env.REACT_APP_URL_GET;
+  const API_URL = process.env.REACT_APP_BASE_URL;
+  const API_URL_GET = process.env.REACT_APP_GET_URL;
 
   const handlerInputText = (e) => {
     if (e.key === "Enter") {
