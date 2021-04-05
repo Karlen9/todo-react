@@ -72,13 +72,6 @@ export default function ToDoList() {
   };
 
   const handlerSubmitTodo = (e) => {
-    // e.preventDefault();
-    // setTodos([
-    //   ...todos, { text: inputText, completed: false, id: todoId, date: new Date(), }
-    // ]);
-    // setTodoId(todoId + 1);
-    // setStatus("all");
-
     async function postItemRequest() {
       //try {
       console.log("posted");
@@ -93,7 +86,6 @@ export default function ToDoList() {
   };
 
   async function getItem() {
-    //try {
     const { data } = await axios.get(API_URL_GET, {
       params: {
         order: sortTrigger,
@@ -101,7 +93,6 @@ export default function ToDoList() {
         page: currPage,
       },
     });
-    console.log(data);
     setTodos(
       data.rows.map((item, index) => ({
         id: index,
@@ -112,10 +103,6 @@ export default function ToDoList() {
         isEditing: item.isEditing,
       }))
     );
-
-    //} catch (error) {
-    //handlerErrors(error);
-    //}
   }
 
   const handlerSetEmptiness = () => {
@@ -137,13 +124,6 @@ export default function ToDoList() {
   };
 
   const handleChangeItemText = (e, index) => {
-    // e.preventDefault();
-    // let updatedTodos = [...todos];
-    // const completedTodo = updatedTodos.find((e) => e.id === index);
-    // completedTodo.text = editInput;
-    // completedTodo.isEditing = false;
-    // setTodos([...updatedTodos]);
-
     const editingItem = todos.find((e) => e.id === index);
 
     editItemRequest(editingItem, editInput);
@@ -171,23 +151,13 @@ export default function ToDoList() {
   };
 
   const handlerDeleteItem = (e, index) => {
-    // e.preventDefault();
-    // let updatedTodos = [...todos];
-    // updatedTodos = updatedTodos.filter( el => el.id !== index);
-    // setTodos([...updatedTodos]);
-
     const deletingItem = todos.find((e) => e.id === index);
 
     async function deleteItem() {
-      //try {
       const element = await axios.delete(
         API_URL + "/task/" + deletingItem.uuid
       );
-      console.log(deleteItem.uuid);
       getItem();
-      //} catch (error) {
-      //handlerErrors(error);
-      //}
     }
 
     deleteItem();
@@ -303,22 +273,6 @@ export default function ToDoList() {
     }
   );
 
-  //localStorage
-
-  // const saveLocalTodos = () => {
-  //   localStorage.setItem("todos", JSON.stringify(todos));
-  // };  //
-
-  // const getLocalTodos = () => {
-  //   if (localStorage.getItem("todos") === null) {
-  //     localStorage.setItem("todos", JSON.stringify([]));
-  //   } else {
-  //     let todosLocal = J￼￼
-  //SON.parse(locatest
-  // useEffect(() => {
-  //   //getLocalTodos();
-  // }, []);
-
   useEffect(() => {
     handlerFilterTodos(status, currPage);
     //saveLocalTodos();
@@ -326,6 +280,7 @@ export default function ToDoList() {
 
   useEffect(() => {
     handlerSetEmptiness();
+    handlerPageCounter(status);
   }, [todos]);
 
   useEffect(() => {
