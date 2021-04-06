@@ -17,7 +17,7 @@ export default function ToDoList() {
   const [todos, setTodos] = useState([]);
   //const [todoId, setTodoId] = useState(0);
   //const [filteredTodos, setFilteredTodos] = useState([...todos]);
-  const [status, setStatus] = useState("all");
+  const [status, setStatus] = useState();
   const [inputVisible, setInputVisible] = useState(false);
   const [isEmpty, setIsEmpty] = useState(true);
   const [currPage, setCurrPage] = useState(1);
@@ -26,8 +26,8 @@ export default function ToDoList() {
   const [errMessage, setErrMessage] = useState("");
   const [isError, setIsError] = useState(false);
 
-  const REST_API_URL = process.env.REACT_APP_BASE_URL;
-  const REST_API_URL_GET = process.env.REACT_APP_GET_URL;
+  const REST_API_URL = process.env.REACT_APP_URL;
+  const REST_API_URL_GET = process.env.REACT_APP_URL_GET;
 
   const handlerInputText = (e) => {
     if (e.key === "Enter") {
@@ -73,15 +73,16 @@ export default function ToDoList() {
 
   const handlerSubmitTodo = (e) => {
     async function postItemRequest() {
-      console.log("posted");
       const todo = { name: inputText, done: false };
-      await axios.post(REST_API_URL + "/task", todo);
-      getItem();
+      await axios.post(REST_API_URL, todo);
+      getItem(sortTrigger, null, currPage);
+      console.log("posted");
     }
     postItemRequest();
   };
 
   async function getItem(sort, filter, pagination) {
+    console.log(123);
     const { data } = await axios.get(REST_API_URL_GET, {
       params: {
         order: sort,
@@ -89,7 +90,10 @@ export default function ToDoList() {
         page: pagination,
       },
     });
-    setTodos(data.rows);
+    console.log("🚀 ~ file: ToDoList.js ~ line 93 ~ getItem ~ data", data);
+
+    setTodos([...data.rows]);
+    console.log(data);
   }
 
   const handlerSetEmptiness = () => {
@@ -102,12 +106,12 @@ export default function ToDoList() {
 
   const handlerSortDateToUp = () => {
     setSortTrigger("asc");
-    getItem();
+    getItem(sortTrigger, null, currPage);
   };
 
   const handlerSortDateToDown = () => {
     setSortTrigger("desc");
-    getItem();
+    getItem(sortTrigger, null, currPage);
   };
 
   const handleChangeItemText = (e, index) => {
@@ -121,58 +125,52 @@ export default function ToDoList() {
   };
 
   async function editItemRequest(item, itemName) {
-    //try {
-    await axios.patch(REST_API_URL + "/task/" + item.id, {
+    await axios.patch(REST_API_URL + "/" + item.id, {
       name: itemName,
     });
-    //} catch (error) {
-    //handlerErrors(error);
-    //}
   }
 
   const handlerCheckingCheckBox = (e, index) => {
     let updatedTodos = [...todos];
     const completedTodo = updatedTodos.find((e) => e.id === index);
-    completedTodo.completed = e.target.checked;
+    completedTodo.done = e.target.checked;
     setTodos([...updatedTodos]);
   };
 
-  const handlerDeleteItem = (e, index) => {
-    const deletingItem = todos.find((e) => e.id === index);
+  const handlerDeleteItem = (index) => {
+    const deletingItem = todos.find((todo) => todo.id === index);
 
     async function deleteItem() {
-      await axios.delete(REST_API_URL + "/task/" + deletingItem.id);
-      getItem();
+      await axios.delete(REST_API_URL + "/" + deletingItem.id);
+      getItem(sortTrigger, null, currPage);
     }
 
     deleteItem();
   };
 
-  const handlerDeleteAllItems = () => {
-    setTodos([]);
-  };
-
   const handlerDeleteAllServerItems = () => {
     //try {
-    for (let i = 0; i < todos.length; i++) {
-      const deletingItem = todos.find((e) => e.id === i);
-
+    todos.forEach((todo) => {
       async function deleteItem() {
-        await axios.delete(REST_API_URL + "/task/" + deletingItem.id);
-        getItem();
+        await axios.delete(REST_API_URL + "/" + todo.id);
+        getItem(sortTrigger, null, currPage);
       }
       deleteItem();
-    }
+    });
   };
 
   const handlerDeleteSelectedItems = (e) => {
-    e.preventDefault();
-    let updatedTodos = [...todos];
-    updatedTodos = updatedTodos.filter((e) => e.completed === false);
-    setTodos([...updatedTodos]);
+    let newTodos = todos.filter((todo) => todo.done === true);
+    newTodos.forEach((todo) => {
+      async function deleteItem() {
+        await axios.delete(REST_API_URL + "/" + todo.id);
+        getItem(sortTrigger, null, currPage);
+      }
+      deleteItem();
+    });
   };
 
-  const handlerFilterTodos = (status, page) => {
+  const handlerFilterTodos = (status) => {
     switch (status) {
       case "all":
         getItem(sortTrigger, null, currPage);
@@ -188,13 +186,13 @@ export default function ToDoList() {
     }
   };
 
-  const handlerCheckIsEditing = (e, index) => {
-    let updatedTodos = [...todos];
-    const completedTodo = updatedTodos.find((e) => e.id === index);
-    completedTodo.isEditing = true;
-    setTodos([...updatedTodos]);
-    setInputVisible(true);
-  };
+  // const handlerCheckIsEditing = (e, index) => {
+  //   let updatedTodos = [...todos];
+  //   const completedTodo = updatedTodos.find((e) => e.id === index);
+  //   completedTodo.isEditing = true;
+  //   setTodos([...updatedTodos]);
+  //   setInputVisible(true);
+  // };
 
   const handlerPageCounter = (stat) => {
     switch (stat) {
@@ -235,10 +233,10 @@ export default function ToDoList() {
     }
   );
 
-  useEffect(() => {
-    handlerFilterTodos(status, currPage);
-    //saveLocalTodos();
-  }, [todos, status]);
+  // useEffect(() => {
+  //   handlerFilterTodos(status, currPage);
+  //   //saveLocalTodos();
+  // }, [todos, status]);
 
   useEffect(() => {
     handlerSetEmptiness();
@@ -246,27 +244,25 @@ export default function ToDoList() {
   }, [todos]);
 
   useEffect(() => {
-    getItem();
+    getItem(sortTrigger, status, currPage);
   }, []);
 
   // useEffect(() => {
   //   setIsError(true);
   // }, [errMessage]);
 
-  useEffect(() => {
-    handlerFilterTodos(status, currPage);
-  }, [currPage]);
+  // useEffect(() => {
+  //   handlerFilterTodos(status, currPage);
+  // }, [currPage]);
 
   useEffect(() => {
     handlerFilterTodos(status, currPage);
     setCurrPage(1);
   }, [status]);
 
-  useEffect(() => {});
-
-  useEffect(() => {
-    handlerPageCounter(status);
-  }, [status, todos]);
+  // useEffect(() => {
+  //   handlerPageCounter(status);
+  // }, [status, todos]);
 
   return (
     <section className="main-section">
@@ -285,7 +281,7 @@ export default function ToDoList() {
       <ListBlock
         todos={todos}
         handlerEscapeEdition={handlerEscapeEdition}
-        handlerCheckIsEditing={handlerCheckIsEditing}
+        //handlerCheckIsEditing={handlerCheckIsEditing}
         handlerCheckingCheckBox={handlerCheckingCheckBox}
         handlerDeleteItem={handlerDeleteItem}
         //filteredTodos={filteredTodos}
@@ -306,7 +302,6 @@ export default function ToDoList() {
         <div className="delete-main-section">
           <DeleteSelected
             handlerDeleteAllServerItems={handlerDeleteAllServerItems}
-            handlerDeleteAllItems={handlerDeleteAllItems}
             handlerDeleteSelectedItems={handlerDeleteSelectedItems}
           />
         </div>

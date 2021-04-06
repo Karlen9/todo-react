@@ -8,7 +8,6 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import EditOutlinedIcon from "@material-ui/icons/EditOutlined";
 import TextField from "@material-ui/core/TextField";
 
-//import ToDoList from '../../ToDoList';
 import "./listblock.css";
 
 export default function ListBlock(props) {
@@ -19,13 +18,13 @@ export default function ListBlock(props) {
           <ListItem key={todo.id}>
             <ListItemIcon>
               <Checkbox
-                checked={todo.completed}
+                checked={todo.done}
                 onClick={(e) => props.handlerCheckingCheckBox(e, todo.id)}
                 color="primary"
               />
             </ListItemIcon>
-            <ListItemText primary={todo.text} />
-            {todo.isEditing ? (
+            <ListItemText primary={todo.name} />
+            {/* {todo.isEditing ? (
               <TextField
                 className="edit-input"
                 onKeyDown={(e) => props.handlerEscapeEdition(e, todo.id)}
@@ -34,8 +33,8 @@ export default function ListBlock(props) {
                   props.handlerEditText(e, todo.id);
                 }}
               />
-            ) : null}
-            <p className="date">{todo.date.split("T")[0]}</p>
+            ) : null} */}
+            {/* <p className="date">{todo.date.split(" ")[0]}</p> */}
             <IconButton
               onClick={(e) => props.handlerCheckIsEditing(e, todo.id)}
               edge="end"
@@ -46,7 +45,7 @@ export default function ListBlock(props) {
               />
             </IconButton>
             <IconButton
-              onClick={(e) => props.handlerDeleteItem(e, todo.id)}
+              onClick={(e) => props.handlerDeleteItem(todo.id)}
               edge="end"
               aria-label="comments"
             >
