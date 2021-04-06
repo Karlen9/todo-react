@@ -73,36 +73,23 @@ export default function ToDoList() {
 
   const handlerSubmitTodo = (e) => {
     async function postItemRequest() {
-      //try {
       console.log("posted");
       const todo = { name: inputText, done: false };
-      const res = await axios.post(API_URL + "/task", todo);
+      await axios.post(API_URL + "/task", todo);
       getItem();
-      //} catch (error) {
-      //handlerErrors(error);
-      //}
     }
     postItemRequest();
   };
 
-  async function getItem() {
+  async function getItem(sort, filter, pagination) {
     const { data } = await axios.get(API_URL_GET, {
       params: {
-        order: sortTrigger,
-        filterBy: status,
-        page: currPage,
+        order: sort,
+        filterBy: filter,
+        page: pagination,
       },
     });
-    setTodos(
-      data.rows.map((item, index) => ({
-        id: index,
-        text: item.name,
-        completed: item.done,
-        date: item.createdAt,
-        uuid: item.id,
-        isEditing: item.isEditing,
-      }))
-    );
+    setTodos(data.rows);
   }
 
   const handlerSetEmptiness = () => {
@@ -135,7 +122,7 @@ export default function ToDoList() {
 
   async function editItemRequest(item, itemName) {
     //try {
-    await axios.patch(API_URL + "/task/" + item.uuid, {
+    await axios.patch(API_URL + "/task/" + item.id, {
       name: itemName,
     });
     //} catch (error) {
@@ -154,9 +141,7 @@ export default function ToDoList() {
     const deletingItem = todos.find((e) => e.id === index);
 
     async function deleteItem() {
-      const element = await axios.delete(
-        API_URL + "/task/" + deletingItem.uuid
-      );
+      await axios.delete(API_URL + "/task/" + deletingItem.id);
       getItem();
     }
 
@@ -173,16 +158,11 @@ export default function ToDoList() {
       const deletingItem = todos.find((e) => e.id === i);
 
       async function deleteItem() {
-        const element = await axios.delete(
-          API_URL + "/task/" + deletingItem.uuid
-        );
+        await axios.delete(API_URL + "/task/" + deletingItem.id);
         getItem();
       }
       deleteItem();
     }
-    // } catch (error) {
-    //handlerErrors(error);
-    //}
   };
 
   const handlerDeleteSelectedItems = (e) => {
@@ -193,34 +173,16 @@ export default function ToDoList() {
   };
 
   const handlerFilterTodos = (status, page) => {
-    const cPage = page - 1;
     switch (status) {
       case "all":
-        setFilteredTodos([...todos.slice(cPage * 5, cPage * 5 + 5)]);
-        setStatus("all");
-
+        getItem(sortTrigger, null, currPage);
         break;
       case "done":
-        setFilteredTodos([
-          ...todos
-            .filter((e) => e.completed === true)
-            .slice(cPage * 5, cPage * 5 + 5),
-        ]);
-        setStatus("done");
-        handlerFilterTodos();
-
+        getItem(sortTrigger, true, currPage);
         break;
       case "undone":
-        setFilteredTodos([
-          ...todos
-            .filter((e) => e.completed === false)
-            .slice(cPage * 5, cPage * 5 + 5),
-        ]);
-        setStatus("undone");
-        handlerFilterTodos();
-
+        getItem(sortTrigger, false, currPage);
         break;
-
       default:
         break;
     }
