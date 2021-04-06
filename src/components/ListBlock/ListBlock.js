@@ -15,7 +15,7 @@ export default function ListBlock(props) {
   return (
     <div className="list">
       <List width="100%">
-        {props.filteredTodos.map((todo) => (
+        {props.todos.map((todo) => (
           <ListItem key={todo.id}>
             <ListItemIcon>
               <Checkbox
