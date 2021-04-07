@@ -10,6 +10,7 @@ import Pages from "./components/Pages/Pages";
 import { Snackbar } from "@material-ui/core";
 import "./ToDoList.css";
 import Alert from "@material-ui/lab/Alert";
+import { TocOutlined } from "@material-ui/icons";
 
 export default function ToDoList() {
   const [inputText, setInputText] = useState("");
@@ -90,15 +91,17 @@ export default function ToDoList() {
         page: pagination,
       },
     });
-    console.log("🚀 ~ file: ToDoList.js ~ line 93 ~ getItem ~ data", data);
 
-    setTodos([...data.rows]);
-    console.log(data);
+    let arr = [...data.rows].map((todo) => {
+      return { ...todo, isEditing: false };
+    });
+    setTodos([...arr]);
+
+    console.log("🚀 ~ file: ToDoList.js ~ line 103 ~ getItem ~ todos", todos);
   }
-
   const handlerSetEmptiness = () => {
     if (todos.length === 0) {
-      setIsEmpty(true);
+      setIsEmpty(false);
     } else if (todos !== 0) {
       setIsEmpty(false);
     }
