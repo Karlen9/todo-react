@@ -10,6 +10,7 @@ import Pages from "./components/Pages/Pages";
 import { Snackbar } from "@material-ui/core";
 import "./ToDoList.css";
 import Alert from "@material-ui/lab/Alert";
+import { RedoTwoTone } from "@material-ui/icons";
 
 export default function ToDoList() {
   const [inputText, setInputText] = useState("");
@@ -25,15 +26,48 @@ export default function ToDoList() {
   const REST_API_URL = process.env.REACT_APP_URL;
   const REST_API_URL_GET = process.env.REACT_APP_URL_GET;
 
+  async function getItem(sort, filter, pagination) {
+    const { data } = await axios.get(REST_API_URL_GET, {
+      params: {
+        order: sort,
+        filterBy: filter,
+        page: pagination,
+      },
+    });
+
+    setAmountOfPages(Math.ceil(data.count / 5));
+    setTodos([...data.rows]);
+  }
+
+  async function editItemText(item) {
+    await axios.patch(REST_API_URL + "/" + item.id, {
+      name: editInput,
+    });
+    getItem(sortTrigger, status, currPage);
+  }
+
+  async function editItemDone(item) {
+    await axios.patch(REST_API_URL + "/" + item.id, {
+      done: item.done,
+    });
+    getItem(sortTrigger, status, currPage);
+  }
+
   const handlerInputText = (e) => {
     if (e.key === "Enter") {
-      if (e.target.value.trim() === "") {
-        alert("Write some task...");
-      } else {
-        e.preventDefault();
-        handlerSubmitTodo(e);
-        setInputText("");
-        e.target.value = "";
+      try {
+        if (e.target.value.trim() === "") {
+          e.target.value = "";
+          throw new Error("Write some task");
+        } else {
+          e.preventDefault();
+          handlerSubmitTodo(e);
+          setInputText("");
+          e.target.value = "";
+        }
+      } catch (error) {
+        setErrMessage(error.message);
+        setIsError(true);
       }
     } else {
       setInputText(e.target.value);
@@ -42,14 +76,20 @@ export default function ToDoList() {
 
   const handlerEditText = (e, index) => {
     if (e.key === "Enter") {
-      if (e.target.value.trim() === "") {
-        alert("Write some task...");
-      } else {
-        e.preventDefault();
-        setEditInput("");
-        handleChangeItemText(e, index);
-        e.target.value = "";
-        getItem(sortTrigger, status, currPage);
+      try {
+        if (e.target.value.trim() === "") {
+          e.target.value = "";
+          throw new Error("Write some task");
+        } else {
+          e.preventDefault();
+          setEditInput("");
+          handleChangeItemText(e, index);
+          e.target.value = "";
+          getItem(sortTrigger, status, currPage);
+        }
+      } catch (error) {
+        setErrMessage(error.message);
+        setIsError(true);
       }
     } else {
       setEditInput(e.target.value);
@@ -73,24 +113,11 @@ export default function ToDoList() {
     async function postItemRequest() {
       const todo = { name: inputText, done: false };
       await axios.post(REST_API_URL, todo);
-      getItem(sortTrigger, null, currPage);
+      getItem(sortTrigger, status, currPage);
       console.log("posted");
     }
     postItemRequest();
   };
-
-  async function getItem(sort, filter, pagination) {
-    const { data } = await axios.get(REST_API_URL_GET, {
-      params: {
-        order: sort,
-        filterBy: filter,
-        page: pagination,
-      },
-    });
-
-    setAmountOfPages(Math.ceil(data.count / 5));
-    setTodos([...data.rows]);
-  }
 
   const handleChangeItemText = (e, index) => {
     const editingItem = todos.find((e) => e.id === index);
@@ -108,18 +135,6 @@ export default function ToDoList() {
     getItem(sortTrigger, status, currPage);
   };
 
-  async function editItemText(item) {
-    await axios.patch(REST_API_URL + "/" + item.id, {
-      name: editInput,
-    });
-  }
-
-  async function editItemDone(item) {
-    await axios.patch(REST_API_URL + "/" + item.id, {
-      done: item.done,
-    });
-  }
-
   const handlerDeleteItem = (index) => {
     const deletingItem = todos.find((todo) => todo.id === index);
 
@@ -131,26 +146,26 @@ export default function ToDoList() {
     deleteItem();
   };
 
-  const handlerDeleteAllServerItems = () => {
-    todos.forEach((todo) => {
-      async function deleteItem() {
-        await axios.delete(REST_API_URL + "/" + todo.id);
-        getItem(sortTrigger, status, currPage);
-      }
-      deleteItem();
-    });
-  };
+  // const handlerDeleteAllServerItems = () => {
+  //   todos.forEach((todo) => {
+  //     async function deleteItem() {
+  //       await axios.delete(REST_API_URL + "/" + todo.id);
+  //     }
+  //     deleteItem();
+  //   });
+  //   getItem(sortTrigger, status, currPage);
+  // };
 
-  const handlerDeleteSelectedItems = (e) => {
-    let newTodos = todos.filter((todo) => todo.done === true);
-    newTodos.forEach((todo) => {
-      async function deleteItem() {
-        await axios.delete(REST_API_URL + "/" + todo.id);
-        getItem(sortTrigger, status, currPage);
-      }
-      deleteItem();
-    });
-  };
+  // const handlerDeleteSelectedItems = (e) => {
+  //   let newTodos = todos.filter((todo) => todo.done === true);
+  //   newTodos.forEach((todo) => {
+  //     async function deleteItem() {
+  //       await axios.delete(REST_API_URL + "/" + todo.id);
+  //     }
+  //     deleteItem();
+  //   });
+  //   getItem(sortTrigger, status, currPage);
+  // };
 
   const handlerPageChange = (e, page) => {
     setCurrPage(page);
@@ -161,8 +176,8 @@ export default function ToDoList() {
       return response;
     },
     (error) => {
-      if (error.response) {
-        setErrMessage(error.message);
+      if (error) {
+        setErrMessage(error.response.data.errors);
         setIsError(true);
       }
       return Promise.reject(error);
@@ -174,21 +189,18 @@ export default function ToDoList() {
   }, []);
 
   useEffect(() => {
-    setIsError(true);
-  }, [errMessage]);
-
-  useEffect(() => {
     getItem(sortTrigger, status, currPage);
     console.log(sortTrigger);
   }, [sortTrigger]);
 
   useEffect(() => {
     getItem(sortTrigger, status, currPage);
-  }, [status]);
+  }, [currPage, status]);
 
   useEffect(() => {
+    setCurrPage(1);
     getItem(sortTrigger, status, currPage);
-  }, [currPage]);
+  }, [status]);
 
   return (
     <section className="main-section">
@@ -213,12 +225,12 @@ export default function ToDoList() {
         amountOfPages={amountOfPages}
       />
 
-      <div className="delete-main-section">
+      {/* <div className="delete-main-section">
         <DeleteSelected
           handlerDeleteAllServerItems={handlerDeleteAllServerItems}
           handlerDeleteSelectedItems={handlerDeleteSelectedItems}
         />
-      </div>
+      </div> */}
 
       {isError ? (
         <Snackbar
