@@ -54,6 +54,7 @@ export default function ToDoList() {
         setEditInput("");
         handleChangeItemText(e, index);
         e.target.value = "";
+        getItem(sortTrigger, status, currPage);
       }
     } else {
       setEditInput(e.target.value);
@@ -68,6 +69,8 @@ export default function ToDoList() {
       const element = updatedTodos.find((e) => e.id === index);
       const prevElement = todos.find((e) => e.id === index);
       element.text = prevElement.text;
+      e.target.value = "";
+      e.target.blur();
       element.isEditing = false;
     }
   };
@@ -108,24 +111,27 @@ export default function ToDoList() {
   const handleChangeItemText = (e, index) => {
     const editingItem = todos.find((e) => e.id === index);
 
-    editItemRequest(editingItem, editInput);
-
-    editingItem.isEditing = false;
-
-    getItem();
+    editItem(editingItem, editInput);
+    getItem(sortTrigger, status, currPage);
   };
 
-  async function editItemRequest(item, itemName) {
+  const handleChangeItemDone = (e, index) => {
+    const editingItem = todos.find((item) => item.id === index);
+  };
+
+  async function editItem(item, itemName) {
     await axios.patch(REST_API_URL + "/" + item.id, {
       name: itemName,
+      done: item.done,
     });
   }
 
-  const handlerCheckingCheckBox = (e, index) => {
+  const handlerCheckingCheckBox = (item, index) => {
     let updatedTodos = [...todos];
-    const completedTodo = updatedTodos.find((e) => e.id === index);
-    completedTodo.done = e.target.checked;
+    const completedTodo = updatedTodos.find((item) => item.id === index);
+    completedTodo.done = item.target.checked;
     setTodos([...updatedTodos]);
+    editItem(completedTodo);
   };
 
   const handlerDeleteItem = (index) => {
@@ -252,7 +258,6 @@ export default function ToDoList() {
   }, [sortTrigger]);
 
   useEffect(() => {
-    setCurrPage(1);
     getItem(sortTrigger, status, currPage);
   }, [status]);
 
