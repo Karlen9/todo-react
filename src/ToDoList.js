@@ -96,6 +96,7 @@ export default function ToDoList() {
     // let arr = [...data.rows].map((todo) => {
     //   return { ...todo, isEditing: false };
     // });
+    setAmountOfPages(Math.ceil(data.count / 5));
     setTodos([...data.rows]);
   }
 
@@ -184,25 +185,26 @@ export default function ToDoList() {
   //   setInputVisible(true);
   // };
 
-  const handlerPageCounter = (stat) => {
-    switch (stat) {
-      case "all":
-        setAmountOfPages(Math.ceil(todos.length / 5));
-        break;
-      case "done":
-        setAmountOfPages(
-          Math.ceil(todos.filter((e) => e.completed === true).length / 5)
-        );
-        break;
-      case "undone":
-        setAmountOfPages(
-          Math.ceil(todos.filter((e) => e.completed === false).length / 5)
-        );
-        break;
-      default:
-        break;
-    }
-  };
+  // const handlerPageCounter = (stat) => {
+  //   getItem(sortTrigger, status, currPage);
+  //   switch (stat) {
+  //     case null:
+  //       setAmountOfPages(Math.ceil(todos.length / 5));
+  //       break;
+  //     case true:
+  //       setAmountOfPages(
+  //         Math.ceil(todos.filter((e) => e.done === true).length / 5)
+  //       );
+  //       break;
+  //     case false:
+  //       setAmountOfPages(
+  //         Math.ceil(todos.filter((e) => e.done === false).length / 5)
+  //       );
+  //       break;
+  //     default:
+  //       break;
+  //   }
+  // };
 
   const handlerPageChange = (e, page) => {
     setCurrPage(page);
@@ -222,15 +224,6 @@ export default function ToDoList() {
     }
   );
 
-  // useEffect(() => {
-  //   handlerFilterTodos(status, currPage);
-  //   //saveLocalTodos();
-  // }, [todos, status]);
-
-  useEffect(() => {
-    handlerPageCounter(status);
-  }, [todos]);
-
   useEffect(() => {
     getItem(sortTrigger, status, currPage);
   }, []);
@@ -238,10 +231,6 @@ export default function ToDoList() {
   useEffect(() => {
     setIsError(true);
   }, [errMessage]);
-
-  // useEffect(() => {
-  //   handlerFilterTodos(status, currPage);
-  // }, [currPage]);
 
   useEffect(() => {
     getItem(sortTrigger, status, currPage);
@@ -251,6 +240,10 @@ export default function ToDoList() {
   useEffect(() => {
     getItem(sortTrigger, status, currPage);
   }, [status]);
+
+  useEffect(() => {
+    getItem(sortTrigger, status, currPage);
+  }, [currPage]);
 
   // useEffect(() => {
   //   handlerPageCounter(status);
@@ -262,7 +255,7 @@ export default function ToDoList() {
       <InputField handlerInputText={handlerInputText} inputText={inputText} />
       <div className="wrapper">
         <Filtering setStatus={setStatus} />
-        <Sorting setSortTrihandlerCheckingCheckBoxgger={setSortTrigger} />
+        <Sorting setSortTrigger={setSortTrigger} />
       </div>
 
       <ListBlock
@@ -278,13 +271,11 @@ export default function ToDoList() {
         handleChangeItemText={handleChangeItemText}
       />
 
-      {!isEmpty ? (
-        <Pages
-          handlerPageCounter={handlerPageCounter}
-          handlerPageChange={handlerPageChange}
-          amountOfPages={amountOfPages}
-        />
-      ) : null}
+      <Pages
+        //handlerPageCounter={handlerPageCounter}
+        handlerPageChange={handlerPageChange}
+        amountOfPages={amountOfPages}
+      />
 
       <div className="delete-main-section">
         <DeleteSelected
