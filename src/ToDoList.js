@@ -10,17 +10,12 @@ import Pages from "./components/Pages/Pages";
 import { Snackbar } from "@material-ui/core";
 import "./ToDoList.css";
 import Alert from "@material-ui/lab/Alert";
-import { TocOutlined } from "@material-ui/icons";
 
 export default function ToDoList() {
   const [inputText, setInputText] = useState("");
   const [editInput, setEditInput] = useState("");
   const [todos, setTodos] = useState([]);
-  //const [todoId, setTodoId] = useState(0);
-  //const [filteredTodos, setFilteredTodos] = useState([...todos]);
   const [status, setStatus] = useState(null);
-  const [inputVisible, setInputVisible] = useState(false);
-  const [isEmpty, setIsEmpty] = useState(true);
   const [currPage, setCurrPage] = useState(1);
   const [amountOfPages, setAmountOfPages] = useState(1);
   const [sortTrigger, setSortTrigger] = useState("asc");
@@ -93,20 +88,9 @@ export default function ToDoList() {
       },
     });
 
-    // let arr = [...data.rows].map((todo) => {
-    //   return { ...todo, isEditing: false };
-    // });
     setAmountOfPages(Math.ceil(data.count / 5));
     setTodos([...data.rows]);
   }
-
-  // const handlerSetEmptiness = () => {
-  //   if (todos.length === 0) {
-  //     setIsEmpty(false);
-  //   } else if (todos !== 0) {
-  //     setIsEmpty(false);
-  //   }
-  // };
 
   const handleChangeItemText = (e, index) => {
     const editingItem = todos.find((e) => e.id === index);
@@ -122,15 +106,6 @@ export default function ToDoList() {
     setTodos([...updatedTodos]);
     editItemDone(task);
     getItem(sortTrigger, status, currPage);
-  };
-
-  const handleChangeItemDone = (item, index) => {
-    // let updatedTodos = [...todos];
-    // const completedTodo = updatedTodos.find((item) => item.id === index);
-    // completedTodo.done = item.target.checked;
-    // const editingItem = todos.find((item) => item.id === index);
-    // editItemDone(editingItem);
-    // getItem(sortTrigger, status, currPage);
   };
 
   async function editItemText(item) {
@@ -177,42 +152,12 @@ export default function ToDoList() {
     });
   };
 
-  // const handlerCheckIsEditing = (e, index) => {
-  //   let updatedTodos = [...todos];
-  //   const completedTodo = updatedTodos.find((e) => e.id === index);
-  //   completedTodo.isEditing = true;
-  //   setTodos([...updatedTodos]);
-  //   setInputVisible(true);
-  // };
-
-  // const handlerPageCounter = (stat) => {
-  //   getItem(sortTrigger, status, currPage);
-  //   switch (stat) {
-  //     case null:
-  //       setAmountOfPages(Math.ceil(todos.length / 5));
-  //       break;
-  //     case true:
-  //       setAmountOfPages(
-  //         Math.ceil(todos.filter((e) => e.done === true).length / 5)
-  //       );
-  //       break;
-  //     case false:
-  //       setAmountOfPages(
-  //         Math.ceil(todos.filter((e) => e.done === false).length / 5)
-  //       );
-  //       break;
-  //     default:
-  //       break;
-  //   }
-  // };
-
   const handlerPageChange = (e, page) => {
     setCurrPage(page);
   };
 
   axios.interceptors.response.use(
     (response) => {
-      // Do something before request is sent\
       return response;
     },
     (error) => {
@@ -245,10 +190,6 @@ export default function ToDoList() {
     getItem(sortTrigger, status, currPage);
   }, [currPage]);
 
-  // useEffect(() => {
-  //   handlerPageCounter(status);
-  // }, [status, todos]);
-
   return (
     <section className="main-section">
       <h1>ToDo</h1>
@@ -260,19 +201,14 @@ export default function ToDoList() {
 
       <ListBlock
         todos={todos}
-        handleChangeItemDone={handleChangeItemDone}
         handlerEscapeEdition={handlerEscapeEdition}
-        //handlerCheckIsEditing={handlerCheckIsEditing}
         handlerCheckingCheckBox={handlerCheckingCheckBox}
         handlerDeleteItem={handlerDeleteItem}
-        //filteredTodos={filteredTodos}
-        inputVisible={inputVisible}
         handlerEditText={handlerEditText}
         handleChangeItemText={handleChangeItemText}
       />
 
       <Pages
-        //handlerPageCounter={handlerPageCounter}
         handlerPageChange={handlerPageChange}
         amountOfPages={amountOfPages}
       />
