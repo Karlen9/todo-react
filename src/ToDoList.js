@@ -18,7 +18,7 @@ export default function ToDoList() {
   const [todos, setTodos] = useState([]);
   //const [todoId, setTodoId] = useState(0);
   //const [filteredTodos, setFilteredTodos] = useState([...todos]);
-  const [status, setStatus] = useState();
+  const [status, setStatus] = useState(null);
   const [inputVisible, setInputVisible] = useState(false);
   const [isEmpty, setIsEmpty] = useState(true);
   const [currPage, setCurrPage] = useState(1);
@@ -83,7 +83,6 @@ export default function ToDoList() {
   };
 
   async function getItem(sort, filter, pagination) {
-    console.log(123);
     const { data } = await axios.get(REST_API_URL_GET, {
       params: {
         order: sort,
@@ -92,29 +91,18 @@ export default function ToDoList() {
       },
     });
 
-    let arr = [...data.rows].map((todo) => {
-      return { ...todo, isEditing: false };
-    });
-    setTodos([...arr]);
-
-    console.log("🚀 ~ file: ToDoList.js ~ line 103 ~ getItem ~ todos", todos);
+    // let arr = [...data.rows].map((todo) => {
+    //   return { ...todo, isEditing: false };
+    // });
+    setTodos([...data.rows]);
   }
+
   const handlerSetEmptiness = () => {
     if (todos.length === 0) {
       setIsEmpty(false);
     } else if (todos !== 0) {
       setIsEmpty(false);
     }
-  };
-
-  const handlerSortDateToUp = () => {
-    setSortTrigger("asc");
-    getItem(sortTrigger, null, currPage);
-  };
-
-  const handlerSortDateToDown = () => {
-    setSortTrigger("desc");
-    getItem(sortTrigger, null, currPage);
   };
 
   const handleChangeItemText = (e, index) => {
@@ -145,7 +133,7 @@ export default function ToDoList() {
 
     async function deleteItem() {
       await axios.delete(REST_API_URL + "/" + deletingItem.id);
-      getItem(sortTrigger, null, currPage);
+      getItem(sortTrigger, status, currPage);
     }
 
     deleteItem();
@@ -156,7 +144,7 @@ export default function ToDoList() {
     todos.forEach((todo) => {
       async function deleteItem() {
         await axios.delete(REST_API_URL + "/" + todo.id);
-        getItem(sortTrigger, null, currPage);
+        getItem(sortTrigger, status, currPage);
       }
       deleteItem();
     });
@@ -167,22 +155,24 @@ export default function ToDoList() {
     newTodos.forEach((todo) => {
       async function deleteItem() {
         await axios.delete(REST_API_URL + "/" + todo.id);
-        getItem(sortTrigger, null, currPage);
+        getItem(sortTrigger, status, currPage);
       }
       deleteItem();
     });
   };
 
-  const handlerFilterTodos = (status) => {
+  const handlerFilterTodos = () => {
     switch (status) {
-      case "all":
-        getItem(sortTrigger, null, currPage);
+      case null:
+        getItem(sortTrigger, status, currPage);
         break;
-      case "done":
-        getItem(sortTrigger, true, currPage);
+      case true:
+        setStatus(true);
+        getItem(sortTrigger, status, currPage);
         break;
-      case "undone":
-        getItem(sortTrigger, false, currPage);
+      case false:
+        setStatus(false);
+        getItem(sortTrigger, status, currPage);
         break;
       default:
         break;
@@ -229,7 +219,6 @@ export default function ToDoList() {
     (error) => {
       if (error.response) {
         setErrMessage(error.message);
-        console.log(error.message);
         setIsError(true);
       }
       return Promise.reject(error);
@@ -242,7 +231,6 @@ export default function ToDoList() {
   // }, [todos, status]);
 
   useEffect(() => {
-    handlerSetEmptiness();
     handlerPageCounter(status);
   }, [todos]);
 
@@ -250,17 +238,22 @@ export default function ToDoList() {
     getItem(sortTrigger, status, currPage);
   }, []);
 
-  // useEffect(() => {
-  //   setIsError(true);
-  // }, [errMessage]);
+  useEffect(() => {
+    setIsError(true);
+  }, [errMessage]);
 
   // useEffect(() => {
   //   handlerFilterTodos(status, currPage);
   // }, [currPage]);
 
   useEffect(() => {
-    handlerFilterTodos(status, currPage);
+    getItem(sortTrigger, status, currPage);
+    console.log(sortTrigger);
+  }, [sortTrigger]);
+
+  useEffect(() => {
     setCurrPage(1);
+    getItem(sortTrigger, status, currPage);
   }, [status]);
 
   // useEffect(() => {
@@ -271,15 +264,10 @@ export default function ToDoList() {
     <section className="main-section">
       <h1>ToDo</h1>
       <InputField handlerInputText={handlerInputText} inputText={inputText} />
-      {!isEmpty ? (
-        <div className="wrapper">
-          <Filtering setStatus={setStatus} />
-          <Sorting
-            handlerSortDateToUp={handlerSortDateToUp}
-            handlerSortDateToDown={handlerSortDateToDown}
-          />
-        </div>
-      ) : null}
+      <div className="wrapper">
+        <Filtering setStatus={setStatus} />
+        <Sorting setSortTrigger={setSortTrigger} />
+      </div>
 
       <ListBlock
         todos={todos}
