@@ -71,7 +71,6 @@ export default function ToDoList() {
       element.text = prevElement.text;
       e.target.value = "";
       e.target.blur();
-      element.isEditing = false;
     }
   };
 
@@ -100,39 +99,50 @@ export default function ToDoList() {
     setTodos([...data.rows]);
   }
 
-  const handlerSetEmptiness = () => {
-    if (todos.length === 0) {
-      setIsEmpty(false);
-    } else if (todos !== 0) {
-      setIsEmpty(false);
-    }
-  };
+  // const handlerSetEmptiness = () => {
+  //   if (todos.length === 0) {
+  //     setIsEmpty(false);
+  //   } else if (todos !== 0) {
+  //     setIsEmpty(false);
+  //   }
+  // };
 
   const handleChangeItemText = (e, index) => {
     const editingItem = todos.find((e) => e.id === index);
 
-    editItem(editingItem, editInput);
+    editItemText(editingItem);
     getItem(sortTrigger, status, currPage);
   };
 
-  const handleChangeItemDone = (e, index) => {
-    const editingItem = todos.find((item) => item.id === index);
+  const handlerCheckingCheckBox = (item, index) => {
+    let updatedTodos = [...todos];
+    const task = updatedTodos.find((e) => e.id === index);
+    task.done = item.target.checked;
+    setTodos([...updatedTodos]);
+    editItemDone(task);
+    getItem(sortTrigger, status, currPage);
   };
 
-  async function editItem(item, itemName) {
+  const handleChangeItemDone = (item, index) => {
+    // let updatedTodos = [...todos];
+    // const completedTodo = updatedTodos.find((item) => item.id === index);
+    // completedTodo.done = item.target.checked;
+    // const editingItem = todos.find((item) => item.id === index);
+    // editItemDone(editingItem);
+    // getItem(sortTrigger, status, currPage);
+  };
+
+  async function editItemText(item) {
     await axios.patch(REST_API_URL + "/" + item.id, {
-      name: itemName,
-      done: item.done,
+      name: editInput,
     });
   }
 
-  const handlerCheckingCheckBox = (item, index) => {
-    let updatedTodos = [...todos];
-    const completedTodo = updatedTodos.find((item) => item.id === index);
-    completedTodo.done = item.target.checked;
-    setTodos([...updatedTodos]);
-    editItem(completedTodo);
-  };
+  async function editItemDone(item) {
+    await axios.patch(REST_API_URL + "/" + item.id, {
+      done: item.done,
+    });
+  }
 
   const handlerDeleteItem = (index) => {
     const deletingItem = todos.find((todo) => todo.id === index);
@@ -146,7 +156,6 @@ export default function ToDoList() {
   };
 
   const handlerDeleteAllServerItems = () => {
-    //try {
     todos.forEach((todo) => {
       async function deleteItem() {
         await axios.delete(REST_API_URL + "/" + todo.id);
@@ -165,24 +174,6 @@ export default function ToDoList() {
       }
       deleteItem();
     });
-  };
-
-  const handlerFilterTodos = () => {
-    switch (status) {
-      case null:
-        getItem(sortTrigger, status, currPage);
-        break;
-      case true:
-        setStatus(true);
-        getItem(sortTrigger, status, currPage);
-        break;
-      case false:
-        setStatus(false);
-        getItem(sortTrigger, status, currPage);
-        break;
-      default:
-        break;
-    }
   };
 
   // const handlerCheckIsEditing = (e, index) => {
@@ -271,11 +262,12 @@ export default function ToDoList() {
       <InputField handlerInputText={handlerInputText} inputText={inputText} />
       <div className="wrapper">
         <Filtering setStatus={setStatus} />
-        <Sorting setSortTrigger={setSortTrigger} />
+        <Sorting setSortTrihandlerCheckingCheckBoxgger={setSortTrigger} />
       </div>
 
       <ListBlock
         todos={todos}
+        handleChangeItemDone={handleChangeItemDone}
         handlerEscapeEdition={handlerEscapeEdition}
         //handlerCheckIsEditing={handlerCheckIsEditing}
         handlerCheckingCheckBox={handlerCheckingCheckBox}
@@ -294,14 +286,12 @@ export default function ToDoList() {
         />
       ) : null}
 
-      {!isEmpty ? (
-        <div className="delete-main-section">
-          <DeleteSelected
-            handlerDeleteAllServerItems={handlerDeleteAllServerItems}
-            handlerDeleteSelectedItems={handlerDeleteSelectedItems}
-          />
-        </div>
-      ) : null}
+      <div className="delete-main-section">
+        <DeleteSelected
+          handlerDeleteAllServerItems={handlerDeleteAllServerItems}
+          handlerDeleteSelectedItems={handlerDeleteSelectedItems}
+        />
+      </div>
 
       {isError ? (
         <Snackbar
