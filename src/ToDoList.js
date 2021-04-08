@@ -146,27 +146,6 @@ export default function ToDoList() {
     deleteItem();
   };
 
-  // const handlerDeleteAllServerItems = () => {
-  //   todos.forEach((todo) => {
-  //     async function deleteItem() {
-  //       await axios.delete(REST_API_URL + "/" + todo.id);
-  //     }
-  //     deleteItem();
-  //   });
-  //   getItem(sortTrigger, status, currPage);
-  // };
-
-  // const handlerDeleteSelectedItems = (e) => {
-  //   let newTodos = todos.filter((todo) => todo.done === true);
-  //   newTodos.forEach((todo) => {
-  //     async function deleteItem() {
-  //       await axios.delete(REST_API_URL + "/" + todo.id);
-  //     }
-  //     deleteItem();
-  //   });
-  //   getItem(sortTrigger, status, currPage);
-  // };
-
   const handlerPageChange = (e, page) => {
     setCurrPage(page);
   };
@@ -187,6 +166,10 @@ export default function ToDoList() {
   useEffect(() => {
     getItem(sortTrigger, status, currPage);
   }, []);
+
+  useEffect(() => {
+    getItem(sortTrigger, status, currPage);
+  }, [amountOfPages]);
 
   useEffect(() => {
     getItem(sortTrigger, status, currPage);
@@ -226,13 +209,6 @@ export default function ToDoList() {
         handlerPageChange={handlerPageChange}
         amountOfPages={amountOfPages}
       />
-
-      {/* <div className="delete-main-section">
-        <DeleteSelected
-          handlerDeleteAllServerItems={handlerDeleteAllServerItems}
-          handlerDeleteSelectedItems={handlerDeleteSelectedItems}
-        />
-      </div> */}
 
       {isError ? (
         <Snackbar
