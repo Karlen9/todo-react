@@ -165,25 +165,7 @@ export default function ToDoList() {
 
   useEffect(() => {
     getItem(sortTrigger, status, currPage);
-  }, []);
-
-  useEffect(() => {
-    getItem(sortTrigger, status, currPage);
-  }, [amountOfPages]);
-
-  useEffect(() => {
-    getItem(sortTrigger, status, currPage);
-    console.log(sortTrigger);
-  }, [sortTrigger]);
-
-  useEffect(() => {
-    getItem(sortTrigger, status, currPage);
-  }, [currPage, status]);
-
-  useEffect(() => {
-    setCurrPage(1);
-    getItem(sortTrigger, status, currPage);
-  }, [status]);
+  }, [currPage, status, amountOfPages, sortTrigger]);
 
   return (
     <section className="main-section">
