@@ -129,8 +129,7 @@ export default function ToDoList() {
   };
 
   const handlerCheckingCheckBox = (item, index) => {
-    let updatedTodos = [...todos];
-    const task = updatedTodos.find((e) => e.id === index);
+    const task = todos.find((e) => e.id === index);
     task.done = item.target.checked;
     editItemDone(task);
     getItem(sortTrigger, status, currPage);
