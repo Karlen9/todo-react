@@ -205,7 +205,7 @@ export default function ToDoList() {
 
   return (
     <section className="main-section">
-      <h1>ToDo</h1>
+      <h1>ToDo List</h1>
       <InputField handlerInputText={handlerInputText} inputText={inputText} />
       <div className="wrapper">
         <Filtering setStatus={setStatus} />
