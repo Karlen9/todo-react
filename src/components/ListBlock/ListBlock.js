@@ -23,26 +23,32 @@ export default function ListBlock(props) {
                 color="primary"
               />
             </ListItemIcon>
-            <ListItemText primary={todo.name} />
-
-            <TextField
-              className="edit-input"
-              onKeyDown={(e) => props.handlerEscapeEdition(e, todo.id)}
-              onChange={(e) => props.handlerEditText(e)}
-              onKeyPress={(e) => {
-                props.handlerEditText(e, todo.id);
+            <ListItemText
+              primary={todo.name}
+              onDoubleClick={() => {
+                props.setIsEdit(todo.id);
               }}
             />
+            {props.isEdit === todo.id ? (
+              <TextField
+                className="edit-input"
+                onKeyDown={(e) => props.handlerEscapeEdition(e, todo.id)}
+                onChange={(e) => props.handlerEditText(e)}
+                onKeyPress={(e) => {
+                  props.handlerEditText(e, todo.id);
+                }}
+              />
+            ) : null}
 
-            {/* <p className="date">{todo.date.split(" ")[0]}</p> */}
+            {<p className="date">{todo.createdAt.split("T")[0]}</p>}
             <IconButton
               onClick={(e) => props.handlerCheckIsEditing(e, todo.id)}
               edge="end"
               aria-label="comments"
             >
-              <EditOutlinedIcon
+              {/* <EditOutlinedIcon
                 onClick={(e) => props.handlerCheckIsEditing(e, todo.id)}
-              />
+              /> */}
             </IconButton>
             <IconButton
               onClick={(e) => props.handlerDeleteItem(todo.id)}

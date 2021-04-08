@@ -22,6 +22,7 @@ export default function ToDoList() {
   const [sortTrigger, setSortTrigger] = useState("asc");
   const [errMessage, setErrMessage] = useState("");
   const [isError, setIsError] = useState(false);
+  const [isEdit, setIsEdit] = useState("");
 
   const REST_API_URL = process.env.REACT_APP_URL;
   const REST_API_URL_GET = process.env.REACT_APP_URL_GET;
@@ -85,6 +86,7 @@ export default function ToDoList() {
           setEditInput("");
           handleChangeItemText(e, index);
           e.target.value = "";
+          setIsEdit("");
           getItem(sortTrigger, status, currPage);
         }
       } catch (error) {
@@ -106,6 +108,7 @@ export default function ToDoList() {
       element.text = prevElement.text;
       e.target.value = "";
       e.target.blur();
+      setIsEdit("");
     }
   };
 
@@ -212,6 +215,8 @@ export default function ToDoList() {
       </div>
 
       <ListBlock
+        setIsEdit={setIsEdit}
+        isEdit={isEdit}
         todos={todos}
         handlerEscapeEdition={handlerEscapeEdition}
         handlerCheckingCheckBox={handlerCheckingCheckBox}

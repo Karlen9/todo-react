@@ -4,7 +4,7 @@
 }
 
 .MuiListItem-gutters {
-  box-shadow: .1rem .1rem .1rem #ccc;
+  box-shadow: 0.1rem 0.1rem 0.1rem #ccc;
   margin-bottom: 5px;
 }
 
@@ -13,5 +13,5 @@
 }
 
 .date {
-  font-size: .7rem;
+  font-size: 0.7rem;
 }
