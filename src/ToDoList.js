@@ -22,8 +22,8 @@ export default function ToDoList() {
   const [isError, setIsError] = useState(false);
   const [isEdit, setIsEdit] = useState("");
 
-  const REST_API_URL = process.env.REACT_APP_URL;
-  const REST_API_URL_GET = process.env.REACT_APP_URL_GET;
+  const REST_API_URL = process.env.REACT_APP_BASE_URL;
+  const REST_API_URL_GET = process.env.REACT_APP_GET_URL;
 
   async function getItem(sort, filter, pagination) {
     const { data } = await axios.get(REST_API_URL_GET, {
