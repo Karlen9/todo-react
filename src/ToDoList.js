@@ -132,7 +132,6 @@ export default function ToDoList() {
     let updatedTodos = [...todos];
     const task = updatedTodos.find((e) => e.id === index);
     task.done = item.target.checked;
-    setTodos([...updatedTodos]);
     editItemDone(task);
     getItem(sortTrigger, status, currPage);
   };
