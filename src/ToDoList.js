@@ -1,7 +1,6 @@
 //imports
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import DeleteSelected from "./components/DeleteSelected/DeleteSelected";
 import Filtering from "./components/Filtering/Filtering";
 import InputField from "./components/InputField/InputField";
 import ListBlock from "./components/ListBlock/ListBlock";
@@ -10,7 +9,6 @@ import Pages from "./components/Pages/Pages";
 import { Snackbar } from "@material-ui/core";
 import "./ToDoList.css";
 import Alert from "@material-ui/lab/Alert";
-import { RedoTwoTone } from "@material-ui/icons";
 
 export default function ToDoList() {
   const [inputText, setInputText] = useState("");
@@ -180,7 +178,7 @@ export default function ToDoList() {
     },
     (error) => {
       if (error) {
-        setErrMessage(error.response.data.errors);
+        setErrMessage(error.response.data.errors || error.response.data.error);
         setIsError(true);
       }
       return Promise.reject(error);
@@ -241,7 +239,7 @@ export default function ToDoList() {
         <Snackbar
           open={isError}
           onClose={() => setIsError(false)}
-          autoHideDuration={5000}
+          autoHideDuration={2000}
         >
           <Alert onClose={() => setIsError(false)} severity="error">
             {errMessage}
