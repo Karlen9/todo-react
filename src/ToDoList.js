@@ -185,10 +185,6 @@ export default function ToDoList() {
     getItem(sortTrigger, status, currPage);
   }, [status]);
 
-  useEffect(() => {
-    getItem(sortTrigger, status, currPage);
-  }, [todos]);
-
   return (
     <section className="main-section">
       <h1>ToDo List</h1>
