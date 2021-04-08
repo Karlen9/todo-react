@@ -84,6 +84,7 @@ export default function ToDoList() {
           setEditInput("");
           handleChangeItemText(e, index);
           e.target.value = "";
+          e.target.focus();
           setIsEdit("");
           getItem(sortTrigger, status, currPage);
         }
