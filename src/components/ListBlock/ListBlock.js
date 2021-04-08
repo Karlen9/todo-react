@@ -41,15 +41,6 @@ export default function ListBlock(props) {
 
             {<p className="date">{todo.createdAt.split("T")[0]}</p>}
             <IconButton
-              onClick={(e) => props.handlerCheckIsEditing(e, todo.id)}
-              edge="end"
-              aria-label="comments"
-            >
-              {/* <EditOutlinedIcon
-                onClick={(e) => props.handlerCheckIsEditing(e, todo.id)}
-              /> */}
-            </IconButton>
-            <IconButton
               onClick={(e) => props.handlerDeleteItem(todo.id)}
               edge="end"
               aria-label="comments"
