@@ -38,13 +38,6 @@ export default function ToDoList() {
     setTodos([...data.rows]);
   }
 
-  // async function editItemText(item) {
-  //   await axios.patch(REST_API_URL + "/" + item.id, {
-  //     name: editInput,
-  //   });
-  //   getItem(sortBy, status, currPage);
-  // }
-
   async function editItem(item) {
     await axios.patch(REST_API_URL + "/" + item.id, {
       done: item.done,
@@ -79,15 +72,14 @@ export default function ToDoList() {
         if (e.target.value.trim() === "") {
           e.target.value = "";
           throw new Error("Write some task");
-        } else {
-          e.preventDefault();
-          setEditInput("");
-          handleChangeItemText(e, index);
-          e.target.value = "";
-          e.target.focus();
-          setIsEdit("");
-          getItem(sortBy, status, currPage);
         }
+        e.preventDefault();
+        setEditInput("");
+        handleChangeItemText(e, index);
+        e.target.value = "";
+        e.target.focus();
+        setIsEdit("");
+        getItem(sortBy, status, currPage);
       } catch (error) {
         setErrMessage(error.message);
         setIsError(true);
