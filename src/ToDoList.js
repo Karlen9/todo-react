@@ -22,8 +22,8 @@ export default function ToDoList() {
   const [isError, setIsError] = useState(false);
   const [isEdit, setIsEdit] = useState("");
 
-  const REST_API_URL = process.env.REACT_APP_BASE_HEROKU;
-  const REST_API_URL_GET = process.env.REACT_APP_GET_HEROKU;
+  const REST_API_URL = process.env.REACT_APP_URL;
+  const REST_API_URL_GET = process.env.REACT_APP_URL_GET;
 
   async function getItem(sort, filter, pagination) {
     const { data } = await axios.get(REST_API_URL_GET, {
@@ -38,16 +38,17 @@ export default function ToDoList() {
     setTodos([...data.rows]);
   }
 
-  async function editItemText(item) {
-    await axios.patch(REST_API_URL + "/" + item.id, {
-      name: editInput,
-    });
-    getItem(sortTrigger, status, currPage);
-  }
+  // async function editItemText(item) {
+  //   await axios.patch(REST_API_URL + "/" + item.id, {
+  //     name: editInput,
+  //   });
+  //   getItem(sortTrigger, status, currPage);
+  // }
 
-  async function editItemDone(item) {
+  async function editItem(item) {
     await axios.patch(REST_API_URL + "/" + item.id, {
       done: item.done,
+      name: item.name,
     });
     getItem(sortTrigger, status, currPage);
   }
@@ -121,17 +122,17 @@ export default function ToDoList() {
     postItemRequest();
   };
 
-  const handleChangeItemText = (e, index) => {
-    const editingItem = todos.find((e) => e.id === index);
-
-    editItemText(editingItem);
+  const handleChangeItemText = (item, index) => {
+    const task = todos.find((item) => item.id === index);
+    task.name = editInput;
+    editItem(task);
     getItem(sortTrigger, status, currPage);
   };
 
   const handlerCheckingCheckBox = (item, index) => {
     const task = todos.find((e) => e.id === index);
     task.done = item.target.checked;
-    editItemDone(task);
+    editItem(task);
     getItem(sortTrigger, status, currPage);
   };
 
