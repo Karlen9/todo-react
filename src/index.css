@@ -11,7 +11,6 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  flex-direction: column;
 }
 
 .main-wrapper {
@@ -30,17 +29,6 @@
   border-radius: 30px;
   /* margin-top: -400px; */
 }
-
-/* .main-input {
-  font-family: "Poppins", sans-serif;
-  padding: .2rem 5rem .2rem .5rem;
-  border: 0;
-  margin: 0 ;
-  outline: 0;
-  height: 2.4rem;
-  font-size: 1.5rem;
-  
-} */
 
 .todolist {
   font-family: "Poppins", sans-serif;

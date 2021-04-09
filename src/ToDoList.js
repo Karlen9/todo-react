@@ -17,7 +17,7 @@ export default function ToDoList() {
   const [status, setStatus] = useState(null);
   const [currPage, setCurrPage] = useState(1);
   const [amountOfPages, setAmountOfPages] = useState(1);
-  const [sortTrigger, setSortTrigger] = useState("asc");
+  const [sortBy, setsortBy] = useState("asc");
   const [errMessage, setErrMessage] = useState("");
   const [isError, setIsError] = useState(false);
   const [isEdit, setIsEdit] = useState("");
@@ -42,7 +42,7 @@ export default function ToDoList() {
   //   await axios.patch(REST_API_URL + "/" + item.id, {
   //     name: editInput,
   //   });
-  //   getItem(sortTrigger, status, currPage);
+  //   getItem(sortBy, status, currPage);
   // }
 
   async function editItem(item) {
@@ -50,7 +50,7 @@ export default function ToDoList() {
       done: item.done,
       name: item.name,
     });
-    getItem(sortTrigger, status, currPage);
+    getItem(sortBy, status, currPage);
   }
 
   const handlerInputText = (e) => {
@@ -59,12 +59,11 @@ export default function ToDoList() {
         if (e.target.value.trim() === "") {
           e.target.value = "";
           throw new Error("Write some task");
-        } else {
-          e.preventDefault();
-          handlerSubmitTodo(e);
-          setInputText("");
-          e.target.value = "";
         }
+        e.preventDefault();
+        handlerSubmitTodo(e);
+        setInputText("");
+        e.target.value = "";
       } catch (error) {
         setErrMessage(error.message);
         setIsError(true);
@@ -87,7 +86,7 @@ export default function ToDoList() {
           e.target.value = "";
           e.target.focus();
           setIsEdit("");
-          getItem(sortTrigger, status, currPage);
+          getItem(sortBy, status, currPage);
         }
       } catch (error) {
         setErrMessage(error.message);
@@ -116,7 +115,7 @@ export default function ToDoList() {
     async function postItemRequest() {
       const todo = { name: inputText, done: false };
       await axios.post(REST_API_URL, todo);
-      getItem(sortTrigger, status, currPage);
+      getItem(sortBy, status, currPage);
       console.log("posted");
     }
     postItemRequest();
@@ -126,14 +125,14 @@ export default function ToDoList() {
     const task = todos.find((item) => item.id === index);
     task.name = editInput;
     editItem(task);
-    getItem(sortTrigger, status, currPage);
+    getItem(sortBy, status, currPage);
   };
 
   const handlerCheckingCheckBox = (item, index) => {
     const task = todos.find((e) => e.id === index);
     task.done = item.target.checked;
     editItem(task);
-    getItem(sortTrigger, status, currPage);
+    getItem(sortBy, status, currPage);
   };
 
   const handlerDeleteItem = (index) => {
@@ -141,7 +140,7 @@ export default function ToDoList() {
 
     async function deleteItem() {
       await axios.delete(REST_API_URL + "/" + deletingItem.id);
-      getItem(sortTrigger, status, currPage);
+      getItem(sortBy, status, currPage);
     }
 
     deleteItem();
@@ -165,8 +164,8 @@ export default function ToDoList() {
   );
 
   useEffect(() => {
-    getItem(sortTrigger, status, currPage);
-  }, [currPage, status, amountOfPages, sortTrigger]);
+    getItem(sortBy, status, currPage);
+  }, [currPage, status, amountOfPages, sortBy]);
 
   return (
     <section className="main-section">
@@ -174,7 +173,7 @@ export default function ToDoList() {
       <InputField handlerInputText={handlerInputText} inputText={inputText} />
       <div className="wrapper">
         <Filtering setStatus={setStatus} />
-        <Sorting setSortTrigger={setSortTrigger} />
+        <Sorting setsortBy={setsortBy} />
       </div>
 
       <ListBlock

@@ -1,0 +1,18 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+
+.sign-up-title {
+  padding: 0 24px 0 24px;
+}
+/* 
+.sign-in-wrapper {
+  width: 50vw;
+}
+
+.makeStyles-form-11 {
+  width: 50vw ;
+} */
