@@ -1,4 +1,6 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { useHistory } from "react-router-dom";
+
 import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import TextField from "@material-ui/core/TextField";
@@ -7,6 +9,7 @@ import Grid from "@material-ui/core/Grid";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import "./signup.css";
+import axios from "axios";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -31,13 +34,46 @@ const useStyles = makeStyles((theme) => ({
 export default function SignUp() {
   const classes = useStyles();
 
+  const [fName, setFName] = useState("");
+  const [lName, setLName] = useState("");
+  const [eMail, setEMail] = useState("");
+  const [pword, setPword] = useState("");
+
+  const AUTH_URL = process.env.REACT_APP_AUTH_URL;
+
+  // async function auth() {
+  //   const user = {
+  //     firstName: fName,
+  //     lastName: lName,
+  //     email: eMail,
+  //     password: pword,
+  //   };
+  //   await axios.post(AUTH_URL);
+  // }
+
+  //const handleFormInput = (e) => {};
+
+  const register = async () => {
+    await axios.post(AUTH_URL, {
+      firstName: fName,
+      lastName: lName,
+      email: eMail,
+      password: pword,
+    });
+  };
+
   return (
     <div className="sign-up-wrapper">
       <h1 className="sign-in-title">Sign Up</h1>
       <Container component="main" maxWidth="xs">
         <CssBaseline />
         <div className={classes.paper}>
-          <form className={classes.form} noValidate>
+          <form
+            //action="http://localhost:3001/user/auth"
+            //method="POST"
+            className={classes.form}
+            noValidate
+          >
             <Grid container spacing={2}>
               <Grid item xs={12}>
                 <TextField
@@ -48,6 +84,9 @@ export default function SignUp() {
                   id="firstName"
                   label="First Name"
                   autoFocus
+                  onChange={(e) => {
+                    setFName(e.target.value);
+                  }}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -58,6 +97,9 @@ export default function SignUp() {
                   label="Last Name"
                   name="lastName"
                   autoComplete="lname"
+                  onChange={(e) => {
+                    setLName(e.target.value);
+                  }}
                 />
               </Grid>
 
@@ -69,6 +111,9 @@ export default function SignUp() {
                   label="Email Address"
                   name="email"
                   autoComplete="off"
+                  onChange={(e) => {
+                    setEMail(e.target.value);
+                  }}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -80,6 +125,9 @@ export default function SignUp() {
                   type="password"
                   id="password"
                   autoComplete="current-password"
+                  onChange={(e) => {
+                    setPword(e.target.value);
+                  }}
                 />
               </Grid>
             </Grid>
@@ -89,6 +137,7 @@ export default function SignUp() {
               variant="contained"
               color="primary"
               className={classes.submit}
+              onClick={register}
             >
               Sign Up
             </Button>
