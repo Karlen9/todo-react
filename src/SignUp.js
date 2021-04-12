@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { useHistory } from "react-router-dom";
 
 import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
@@ -31,7 +30,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function SignUp() {
+export default function SignUp(props) {
   const classes = useStyles();
 
   const [fName, setFName] = useState("");
@@ -39,28 +38,33 @@ export default function SignUp() {
   const [eMail, setEMail] = useState("");
   const [pword, setPword] = useState("");
 
-  const AUTH_URL = process.env.REACT_APP_AUTH_URL;
+  const REGISTER_URL = process.env.REACT_APP_AUTH_URL;
 
-  // async function auth() {
-  //   const user = {
-  //     firstName: fName,
-  //     lastName: lName,
-  //     email: eMail,
-  //     password: pword,
-  //   };
-  //   await axios.post(AUTH_URL);
-  // }
-
-  //const handleFormInput = (e) => {};
-
-  const register = async () => {
-    await axios.post(AUTH_URL, {
+  const register = async (e) => {
+    e.preventDefault();
+    await axios.post(REGISTER_URL, {
       firstName: fName,
       lastName: lName,
       email: eMail,
       password: pword,
     });
+    props.history.push("/signin");
   };
+
+  axios.interceptors.response.use(
+    (response) => {
+      return response;
+    },
+    (error) => {
+      if (error) {
+        props.setErrMessage(
+          error.response.data.errors || error.response.data.error
+        );
+        props.setIsError(true);
+      }
+      return Promise.reject(error);
+    }
+  );
 
   return (
     <div className="sign-up-wrapper">
@@ -69,10 +73,9 @@ export default function SignUp() {
         <CssBaseline />
         <div className={classes.paper}>
           <form
-            //action="http://localhost:3001/user/auth"
-            //method="POST"
             className={classes.form}
             noValidate
+            onSubmit={(e) => register(e)}
           >
             <Grid container spacing={2}>
               <Grid item xs={12}>
@@ -137,7 +140,6 @@ export default function SignUp() {
               variant="contained"
               color="primary"
               className={classes.submit}
-              onClick={register}
             >
               Sign Up
             </Button>
