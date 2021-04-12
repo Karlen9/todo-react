@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from "react";
 
+import { Snackbar } from "@material-ui/core";
+import Alert from "@material-ui/lab/Alert";
+
 import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import TextField from "@material-ui/core/TextField";
@@ -48,7 +51,7 @@ export default function SignUp(props) {
       email: eMail,
       password: pword,
     });
-    props.history.push("/signin");
+    props.history.push("/login");
   };
 
   axios.interceptors.response.use(
@@ -57,6 +60,8 @@ export default function SignUp(props) {
     },
     (error) => {
       if (error) {
+        console.log(123);
+
         props.setErrMessage(
           error.response.data.errors || error.response.data.error
         );
@@ -145,12 +150,24 @@ export default function SignUp(props) {
             </Button>
             <Grid container justify="flex-end">
               <Grid item>
-                <Link href="/signin" variant="body2">
+                <Link href="/login" variant="body2">
                   Already have an account? Sign in
                 </Link>
               </Grid>
             </Grid>
           </form>
+
+          {props.isError ? (
+            <Snackbar
+              open={props.isError}
+              onClose={() => props.setIsError(false)}
+              autoHideDuration={2000}
+            >
+              <Alert onClose={() => props.setIsError(false)} severity="error">
+                {props.errMessage}
+              </Alert>
+            </Snackbar>
+          ) : null}
         </div>
       </Container>
     </div>

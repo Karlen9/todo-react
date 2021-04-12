@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import TextField from "@material-ui/core/TextField";
@@ -6,6 +6,7 @@ import Link from "@material-ui/core/Link";
 import Grid from "@material-ui/core/Grid";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
+import axios from "axios";
 
 import "./signin.css";
 
@@ -25,8 +26,25 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function SignIn() {
+export default function SignIn(props) {
   const classes = useStyles();
+
+  const LOGIN_URL = process.env.REACT_APP_LOGIN;
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const login = async (e) => {
+    console.log(324234221343243);
+
+    e.preventDefault();
+    await axios.post(LOGIN_URL, {
+      email: email,
+      password: password,
+    });
+    console.log(221343243);
+    props.history.push("/todos");
+  };
 
   return (
     <div className="sign-in-wrapper">
@@ -34,7 +52,7 @@ export default function SignIn() {
       <Container component="main" maxWidth="xs">
         <CssBaseline />
         <div className={classes.paper}>
-          <form className={classes.form} noValidate>
+          <form className={classes.form} noValidate onSubmit={(e) => login(e)}>
             <TextField
               margin="normal"
               required
@@ -44,6 +62,9 @@ export default function SignIn() {
               name="email"
               autoComplete="off"
               autoFocus
+              onChange={(e) => {
+                setEmail(e.target.value);
+              }}
             />
             <TextField
               margin="normal"
@@ -54,6 +75,9 @@ export default function SignIn() {
               type="password"
               id="password"
               autoComplete="off"
+              onChange={(e) => {
+                setPassword(e.target.value);
+              }}
             />
             <Button
               type="submit"

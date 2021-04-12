@@ -8,8 +8,8 @@ export default function App() {
     <div className="App">
       <Router>
         <Route path="/todos" component={ToDoList} />
-        <Route path="/signin" component={SignIn} />
-        <Route path="/auth" component={SignUp} />
+        <Route path="/login" component={SignIn} />
+        <Route path="/register" component={SignUp} />
       </Router>
     </div>
   );

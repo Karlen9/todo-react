@@ -39,7 +39,7 @@ export default function ToDoList() {
   }
 
   async function editItem(item) {
-    await axios.patch(REST_API_URL + "/" + item.id, {
+    await axios.patch(REST_API_URL + "/patch/" + item.id, {
       done: item.done,
       name: item.name,
     });
@@ -106,7 +106,7 @@ export default function ToDoList() {
   const handlerSubmitTodo = (e) => {
     async function postItemRequest() {
       const todo = { name: inputText, done: false };
-      await axios.post(REST_API_URL, todo);
+      await axios.post(REST_API_URL + "/post", todo);
       getItem(sortBy, status, currPage);
       console.log("posted");
     }
@@ -131,7 +131,7 @@ export default function ToDoList() {
     const deletingItem = todos.find((todo) => todo.id === index);
 
     async function deleteItem() {
-      await axios.delete(REST_API_URL + "/" + deletingItem.id);
+      await axios.delete(REST_API_URL + "/delete/" + deletingItem.id);
       getItem(sortBy, status, currPage);
     }
 
