@@ -22,6 +22,7 @@ export default function ToDoList(props) {
   const [errMessage, setErrMessage] = useState("");
   const [isError, setIsError] = useState(false);
   const [isEdit, setIsEdit] = useState("");
+  const [amountOfTasks, setAmountOfTasks] = useState(0);
 
   const REST_API_URL = process.env.REACT_APP_URL;
   const REST_API_URL_GET = process.env.REACT_APP_URL_GET;
@@ -43,6 +44,7 @@ export default function ToDoList(props) {
     });
 
     setAmountOfPages(Math.ceil(data.count / 5));
+    setAmountOfTasks(data.count);
     setTodos([...data.rows]);
   }
 
@@ -236,11 +238,12 @@ export default function ToDoList(props) {
         handlerEditText={handlerEditText}
         handleChangeItemText={handleChangeItemText}
       />
-
-      <Pages
-        handlerPageChange={handlerPageChange}
-        amountOfPages={amountOfPages}
-      />
+      {amountOfTasks > 5 ? (
+        <Pages
+          handlerPageChange={handlerPageChange}
+          amountOfPages={amountOfPages}
+        />
+      ) : null}
       <button
         onClick={(e) => {
           signOut(e);
