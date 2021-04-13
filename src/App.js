@@ -7,9 +7,11 @@ export default function App() {
   return (
     <div className="App">
       <Router>
-        <Route path="/todos" component={ToDoList} />
-        <Route path="/login" component={SignIn} />
-        <Route path="/register" component={SignUp} />
+        <Switch>
+          <Route path="/todos" component={ToDoList} />
+          <Route path="/login" component={SignIn} />
+          <Route path="/register" component={SignUp} />
+        </Switch>
       </Router>
     </div>
   );

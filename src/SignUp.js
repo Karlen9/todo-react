@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
 import { Snackbar } from "@material-ui/core";
 import Alert from "@material-ui/lab/Alert";
-
 import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import TextField from "@material-ui/core/TextField";
@@ -41,6 +40,9 @@ export default function SignUp(props) {
   const [eMail, setEMail] = useState("");
   const [pword, setPword] = useState("");
 
+  const [errMessage, setErrMessage] = useState("");
+  const [isError, setIsError] = useState(false);
+
   const REGISTER_URL = process.env.REACT_APP_AUTH_URL;
 
   const register = async (e) => {
@@ -61,11 +63,9 @@ export default function SignUp(props) {
     (error) => {
       if (error) {
         console.log(123);
-
-        props.setErrMessage(
-          error.response.data.errors || error.response.data.error
-        );
-        props.setIsError(true);
+        console.log(error);
+        setErrMessage(error.response.data.errors || error.response.data.error);
+        setIsError(true);
       }
       return Promise.reject(error);
     }
@@ -157,14 +157,14 @@ export default function SignUp(props) {
             </Grid>
           </form>
 
-          {props.isError ? (
+          {isError ? (
             <Snackbar
-              open={props.isError}
-              onClose={() => props.setIsError(false)}
+              open={isError}
+              onClose={() => setIsError(false)}
               autoHideDuration={2000}
             >
-              <Alert onClose={() => props.setIsError(false)} severity="error">
-                {props.errMessage}
+              <Alert onClose={() => setIsError(false)} severity="error">
+                {errMessage}
               </Alert>
             </Snackbar>
           ) : null}

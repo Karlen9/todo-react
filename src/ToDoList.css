@@ -20,3 +20,8 @@
 .wrapper h1 {
   margin-right: 20px;
 }
+
+.sign-out-btn {
+  margin-top: 3rem;
+  padding: 0.3rem 1.5rem 0.3rem 1.5rem;
+}

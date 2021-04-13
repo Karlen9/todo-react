@@ -38,11 +38,16 @@ export default function SignIn(props) {
     console.log(324234221343243);
 
     e.preventDefault();
-    await axios.post(LOGIN_URL, {
-      email: email,
-      password: password,
+    const user = await axios({
+      method: "POST",
+      url: LOGIN_URL,
+      data: {
+        email: email,
+        password: password,
+      },
     });
-    console.log(221343243);
+    localStorage.setItem("token", user.data.accessToken);
+    console.log(user.data.accessToken);
     props.history.push("/todos");
   };
 
@@ -60,7 +65,7 @@ export default function SignIn(props) {
               id="email"
               label="Email Address"
               name="email"
-              autoComplete="off"
+              autoComplete="email"
               autoFocus
               onChange={(e) => {
                 setEmail(e.target.value);
@@ -89,13 +94,8 @@ export default function SignIn(props) {
               Sign In
             </Button>
             <Grid container>
-              <Grid item xs>
-                <Link href="#" variant="body2">
-                  Forgot password?
-                </Link>
-              </Grid>
               <Grid item>
-                <Link href="/auth" variant="body2">
+                <Link href="/register" variant="body2">
                   {"Don't have an account? Sign Up"}
                 </Link>
               </Grid>

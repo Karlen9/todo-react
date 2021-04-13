@@ -7,10 +7,11 @@ import ListBlock from "./components/ListBlock/ListBlock";
 import Sorting from "./components/Sorting/Sorting";
 import Pages from "./components/Pages/Pages";
 import { Snackbar } from "@material-ui/core";
-import "./ToDoList.css";
 import Alert from "@material-ui/lab/Alert";
 
-export default function ToDoList() {
+import "./ToDoList.css";
+
+export default function ToDoList(props) {
   const [inputText, setInputText] = useState("");
   const [editInput, setEditInput] = useState("");
   const [todos, setTodos] = useState([]);
@@ -25,12 +26,19 @@ export default function ToDoList() {
   const REST_API_URL = process.env.REACT_APP_URL;
   const REST_API_URL_GET = process.env.REACT_APP_URL_GET;
 
+  axios.defaults.baseURL = REST_API_URL;
+
   async function getItem(sort, filter, pagination) {
+    console.log(localStorage.getItem("token"));
+
     const { data } = await axios.get(REST_API_URL_GET, {
       params: {
         order: sort,
         filterBy: filter,
         page: pagination,
+      },
+      headers: {
+        "auth-token": localStorage.getItem("token"),
       },
     });
 
@@ -39,9 +47,19 @@ export default function ToDoList() {
   }
 
   async function editItem(item) {
-    await axios.patch(REST_API_URL + "/patch/" + item.id, {
-      done: item.done,
-      name: item.name,
+    await axios({
+      method: "PATCH",
+      url: "/task/patch",
+      params: {
+        id: item.id,
+      },
+      data: {
+        name: item.name,
+        done: item.done,
+      },
+      headers: {
+        "auth-token": localStorage.getItem("token"),
+      },
     });
     getItem(sortBy, status, currPage);
   }
@@ -105,8 +123,17 @@ export default function ToDoList() {
 
   const handlerSubmitTodo = (e) => {
     async function postItemRequest() {
-      const todo = { name: inputText, done: false };
-      await axios.post(REST_API_URL + "/post", todo);
+      await axios({
+        method: "POST",
+        url: "/task/post",
+        data: {
+          name: inputText,
+          done: false,
+        },
+        headers: {
+          "auth-token": localStorage.getItem("token"),
+        },
+      });
       getItem(sortBy, status, currPage);
       console.log("posted");
     }
@@ -131,7 +158,16 @@ export default function ToDoList() {
     const deletingItem = todos.find((todo) => todo.id === index);
 
     async function deleteItem() {
-      await axios.delete(REST_API_URL + "/delete/" + deletingItem.id);
+      await axios({
+        method: "DELETE",
+        url: "/task/delete",
+        params: {
+          id: deletingItem.id,
+        },
+        headers: {
+          "auth-token": localStorage.getItem("token"),
+        },
+      });
       getItem(sortBy, status, currPage);
     }
 
@@ -140,6 +176,12 @@ export default function ToDoList() {
 
   const handlerPageChange = (e, page) => {
     setCurrPage(page);
+  };
+
+  const signOut = (e) => {
+    e.preventDefault = false;
+    localStorage.removeItem("token");
+    props.history.push("/login");
   };
 
   axios.interceptors.response.use(
@@ -155,9 +197,25 @@ export default function ToDoList() {
     }
   );
 
+  const redirectToLogIn = () => {
+    if (
+      errMessage === "Token is invalid, please log in" ||
+      errMessage === "Invalid Token"
+    ) {
+      props.history.push("/login");
+    }
+  };
+
   useEffect(() => {
+    if (!localStorage.getItem("token")) {
+      props.history.push("/login");
+    }
     getItem(sortBy, status, currPage);
   }, [currPage, status, amountOfPages, sortBy]);
+
+  useEffect(() => {
+    redirectToLogIn();
+  }, [errMessage]);
 
   return (
     <section className="main-section">
@@ -183,6 +241,14 @@ export default function ToDoList() {
         handlerPageChange={handlerPageChange}
         amountOfPages={amountOfPages}
       />
+      <button
+        onClick={(e) => {
+          signOut(e);
+        }}
+        className="button sign-out-btn"
+      >
+        Sign out
+      </button>
 
       {isError ? (
         <Snackbar
