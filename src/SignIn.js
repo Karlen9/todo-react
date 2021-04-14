@@ -31,7 +31,7 @@ const useStyles = makeStyles((theme) => ({
 export default function SignIn(props) {
   const classes = useStyles();
 
-  const LOGIN_URL = process.env.REACT_APP_LOGIN;
+  const LOGIN_URL = process.env.REACT_APP_LOGIN_HEROKU;
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");

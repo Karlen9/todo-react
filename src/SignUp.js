@@ -42,7 +42,7 @@ export default function SignUp(props) {
   const [errMessage, setErrMessage] = useState("");
   const [isError, setIsError] = useState(false);
 
-  const REGISTER_URL = process.env.REACT_APP_AUTH_URL;
+  const REGISTER_URL = process.env.REACT_APP_AUTH_HEROKU;
 
   const register = async (e) => {
     e.preventDefault();
