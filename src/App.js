@@ -1,12 +1,11 @@
 import ToDoList from "./ToDoList";
 import SignUp from "./SignUp";
 import SignIn from "./SignIn";
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import { HashRouter as Router, Switch, Route } from "react-router-dom";
 
 export default function App() {
   return (
     <div className="App">
-      <h1>ToDo</h1>
       <Router>
         <Switch>
           <Route path="/todos">
