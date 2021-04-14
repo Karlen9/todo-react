@@ -9,16 +9,10 @@ export default function Sorting(props) {
       <div className="sort">
         <h3>Sort by Dаte</h3>
         <div className="arrows">
-          <Button
-            onClick={() => props.setSortTrigger("asc")}
-            variant="contained"
-          >
+          <Button onClick={() => props.setSortBy("asc")} variant="contained">
             <ImArrowUp className="up-arrow" size="1rem" />
           </Button>
-          <Button
-            onClick={() => props.setSortTrigger("desc")}
-            variant="contained"
-          >
+          <Button onClick={() => props.setSortBy("desc")} variant="contained">
             <ImArrowDown className="down-arrow" size="1rem" />
           </Button>
         </div>

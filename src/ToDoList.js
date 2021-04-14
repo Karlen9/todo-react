@@ -10,6 +10,7 @@ import { Snackbar } from "@material-ui/core";
 import Alert from "@material-ui/lab/Alert";
 
 import "./ToDoList.css";
+import { VerifiedUserRounded } from "@material-ui/icons";
 
 export default function ToDoList(props) {
   const [inputText, setInputText] = useState("");
@@ -18,7 +19,7 @@ export default function ToDoList(props) {
   const [status, setStatus] = useState(null);
   const [currPage, setCurrPage] = useState(1);
   const [amountOfPages, setAmountOfPages] = useState(1);
-  const [sortBy, setsortBy] = useState("asc");
+  const [sortBy, setSortBy] = useState("asc");
   const [errMessage, setErrMessage] = useState("");
   const [isError, setIsError] = useState(false);
   const [isEdit, setIsEdit] = useState("");
@@ -30,8 +31,6 @@ export default function ToDoList(props) {
   axios.defaults.baseURL = REST_API_URL;
 
   async function getItem(sort, filter, pagination) {
-    console.log(localStorage.getItem("token"));
-
     const { data } = await axios.get(REST_API_URL_GET, {
       params: {
         order: sort,
@@ -223,10 +222,13 @@ export default function ToDoList(props) {
     <section className="main-section">
       <h1>ToDo List</h1>
       <InputField handlerInputText={handlerInputText} inputText={inputText} />
-      <div className="wrapper">
-        <Filtering setStatus={setStatus} />
-        <Sorting setsortBy={setsortBy} />
-      </div>
+
+      {amountOfTasks >= 1 ? (
+        <div className="wrapper">
+          <Filtering setStatus={setStatus} />
+          <Sorting setSortBy={setSortBy} />
+        </div>
+      ) : null}
 
       <ListBlock
         setIsEdit={setIsEdit}

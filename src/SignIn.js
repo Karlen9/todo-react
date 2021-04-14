@@ -4,6 +4,8 @@ import CssBaseline from "@material-ui/core/CssBaseline";
 import TextField from "@material-ui/core/TextField";
 import Link from "@material-ui/core/Link";
 import Grid from "@material-ui/core/Grid";
+import { Snackbar } from "@material-ui/core";
+import Alert from "@material-ui/lab/Alert";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import axios from "axios";
@@ -34,9 +36,10 @@ export default function SignIn(props) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const login = async (e) => {
-    console.log(324234221343243);
+  const [errMessage, setErrMessage] = useState("");
+  const [isError, setIsError] = useState(false);
 
+  const login = async (e) => {
     e.preventDefault();
     const user = await axios({
       method: "POST",
@@ -47,9 +50,21 @@ export default function SignIn(props) {
       },
     });
     localStorage.setItem("token", user.data.accessToken);
-    console.log(user.data.accessToken);
     props.history.push("/todos");
   };
+
+  axios.interceptors.response.use(
+    (response) => {
+      return response;
+    },
+    (error) => {
+      if (error) {
+        setErrMessage(error.response.data.errors || error.response.data.error);
+        setIsError(true);
+      }
+      return Promise.reject(error);
+    }
+  );
 
   return (
     <div className="sign-in-wrapper">
@@ -101,6 +116,17 @@ export default function SignIn(props) {
               </Grid>
             </Grid>
           </form>
+          {isError ? (
+            <Snackbar
+              open={isError}
+              onClose={() => setIsError(false)}
+              autoHideDuration={2000}
+            >
+              <Alert onClose={() => setIsError(false)} severity="error">
+                {errMessage}
+              </Alert>
+            </Snackbar>
+          ) : null}
         </div>
       </Container>
     </div>

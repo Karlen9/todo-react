@@ -6,7 +6,7 @@
 }
 
 .App {
-  background: radial-gradient((to left bottom) #ccc, #fff);
+  background-color: #fff;
   min-height: 100vh;
   display: flex;
   justify-content: center;

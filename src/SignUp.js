@@ -35,8 +35,7 @@ const useStyles = makeStyles((theme) => ({
 export default function SignUp(props) {
   const classes = useStyles();
 
-  const [fName, setFName] = useState("");
-  const [lName, setLName] = useState("");
+  const [name, setName] = useState("");
   const [eMail, setEMail] = useState("");
   const [pword, setPword] = useState("");
 
@@ -48,8 +47,7 @@ export default function SignUp(props) {
   const register = async (e) => {
     e.preventDefault();
     await axios.post(REGISTER_URL, {
-      firstName: fName,
-      lastName: lName,
+      name: name,
       email: eMail,
       password: pword,
     });
@@ -62,8 +60,6 @@ export default function SignUp(props) {
     },
     (error) => {
       if (error) {
-        console.log(123);
-        console.log(error);
         setErrMessage(error.response.data.errors || error.response.data.error);
         setIsError(true);
       }
@@ -90,23 +86,10 @@ export default function SignUp(props) {
                   required
                   fullWidth
                   id="firstName"
-                  label="First Name"
+                  label="Name"
                   autoFocus
                   onChange={(e) => {
-                    setFName(e.target.value);
-                  }}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  required
-                  fullWidth
-                  id="lastName"
-                  label="Last Name"
-                  name="lastName"
-                  autoComplete="lname"
-                  onChange={(e) => {
-                    setLName(e.target.value);
+                    setName(e.target.value);
                   }}
                 />
               </Grid>
