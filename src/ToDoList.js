@@ -10,7 +10,6 @@ import { Snackbar } from "@material-ui/core";
 import Alert from "@material-ui/lab/Alert";
 
 import "./ToDoList.css";
-import { VerifiedUserRounded } from "@material-ui/icons";
 
 export default function ToDoList(props) {
   const [inputText, setInputText] = useState("");
@@ -206,6 +205,10 @@ export default function ToDoList(props) {
       props.history.push("/login");
     }
   };
+
+  useEffect(() => {
+    getItem(sortBy, status, currPage);
+  }, []);
 
   useEffect(() => {
     if (!localStorage.getItem("token")) {
