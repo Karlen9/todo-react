@@ -46,7 +46,7 @@
       "last 1 safari version"
     ]
   },
-  "homepage": "https://karlen9.github.io/todo-react/login",
+  "homepage": "https://karlen9.github.io/todo-react/",
   "devDependencies": {
     "gh-pages": "^3.1.0"
   }
