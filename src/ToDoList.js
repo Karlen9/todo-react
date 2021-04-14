@@ -8,7 +8,7 @@ import Sorting from "./components/Sorting/Sorting";
 import Pages from "./components/Pages/Pages";
 import { Snackbar } from "@material-ui/core";
 import Alert from "@material-ui/lab/Alert";
-import { useHistory } from "react-router-dom";
+import { Redirect, Route } from "react-router";
 
 import "./ToDoList.css";
 
@@ -29,8 +29,6 @@ export default function ToDoList(props) {
   const REST_API_URL_GET = process.env.REACT_APP_GET_HEROKU;
 
   axios.defaults.baseURL = REST_API_URL;
-
-  let history = useHistory();
 
   async function getItem(sort, filter, pagination) {
     const { data } = await axios.get(REST_API_URL_GET, {
@@ -184,7 +182,7 @@ export default function ToDoList(props) {
   const signOut = (e) => {
     e.preventDefault = false;
     localStorage.removeItem("token");
-    history.push("/login");
+    return <Redirect to="/todos" />;
   };
 
   axios.interceptors.response.use(
@@ -205,7 +203,7 @@ export default function ToDoList(props) {
       errMessage === "Token is invalid, please log in" ||
       errMessage === "Invalid Token"
     ) {
-      history.push("/login");
+      return <Redirect to="/login" />;
     }
   };
 
@@ -215,7 +213,7 @@ export default function ToDoList(props) {
 
   useEffect(() => {
     if (!localStorage.getItem("token")) {
-      history.push("/login");
+      return <Redirect to="/login" />;
     }
     getItem(sortBy, status, currPage);
   }, [currPage, status, amountOfPages, sortBy]);

@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Redirect } from "react-router";
 
 import { Snackbar } from "@material-ui/core";
 import Alert from "@material-ui/lab/Alert";
@@ -51,7 +52,7 @@ export default function SignUp(props) {
       email: eMail,
       password: pword,
     });
-    props.history.push("/login");
+    return <Redirect to="/login" />;
   };
 
   axios.interceptors.response.use(

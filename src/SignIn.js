@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { Redirect } from "react-router";
+
 import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import TextField from "@material-ui/core/TextField";
@@ -50,7 +52,7 @@ export default function SignIn(props) {
       },
     });
     localStorage.setItem("token", user.data.accessToken);
-    props.history.push("/todos");
+    return <Redirect to="/todos" />;
   };
 
   axios.interceptors.response.use(
