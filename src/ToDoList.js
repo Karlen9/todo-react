@@ -26,9 +26,8 @@ export default function ToDoList(props) {
   const [amountOfTasks, setAmountOfTasks] = useState(0);
 
   const REST_API_URL = process.env.REACT_APP_URL;
-  const REST_API_URL_GET = process.env.REACT_APP_GET_HEROKU;
 
-  axios.defaults.baseURL = REST_API_URL;
+  axios.defaults.baseURL = "https://backend-serv-app.herokuapp.com/";
 
   async function getItem(sort, filter, pagination) {
     const { data } = await axios({
