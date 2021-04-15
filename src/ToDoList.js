@@ -31,7 +31,7 @@ export default function ToDoList(props) {
 
   async function getItem(sort, filter, pagination) {
     const { data } = await axios({
-      method: "POST",
+      method: "GET",
       url: "/tasks/get",
       params: {
         order: sort,
