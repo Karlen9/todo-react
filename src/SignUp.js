@@ -43,16 +43,20 @@ export default function SignUp(props) {
   const [errMessage, setErrMessage] = useState("");
   const [isError, setIsError] = useState(false);
 
-  const REGISTER_URL = process.env.REACT_APP_AUTH_HEROKU;
+  axios.defaults.baseURL = process.env.REACT_APP_URL;
 
   const register = async (e) => {
     e.preventDefault();
-    await axios.post(REGISTER_URL, {
-      name: name,
-      email: eMail,
-      password: pword,
+    await axios({
+      method: "POST",
+      url: "/user/register",
+      data: {
+        name: name,
+        email: eMail,
+        password: pword,
+      },
     });
-    return <Redirect to="/login" />;
+    return <Redirect to="react-todo/#/login" />;
   };
 
   axios.interceptors.response.use(

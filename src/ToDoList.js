@@ -8,7 +8,7 @@ import Sorting from "./components/Sorting/Sorting";
 import Pages from "./components/Pages/Pages";
 import { Snackbar } from "@material-ui/core";
 import Alert from "@material-ui/lab/Alert";
-import { Redirect, Route } from "react-router";
+import { Redirect } from "react-router";
 
 import "./ToDoList.css";
 
@@ -182,7 +182,7 @@ export default function ToDoList(props) {
   const signOut = (e) => {
     e.preventDefault = false;
     localStorage.removeItem("token");
-    return <Redirect to="/todos" />;
+    return <Redirect to="react-todo/#/todos" />;
   };
 
   axios.interceptors.response.use(
@@ -203,7 +203,7 @@ export default function ToDoList(props) {
       errMessage === "Token is invalid, please log in" ||
       errMessage === "Invalid Token"
     ) {
-      return <Redirect to="/login" />;
+      return <Redirect to="react-todo/#/login" />;
     }
   };
 
@@ -213,7 +213,7 @@ export default function ToDoList(props) {
 
   useEffect(() => {
     if (!localStorage.getItem("token")) {
-      return <Redirect to="/login" />;
+      return <Redirect to="react-todo/#/login" />;
     }
     getItem(sortBy, status, currPage);
   }, [currPage, status, amountOfPages, sortBy]);

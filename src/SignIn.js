@@ -35,6 +35,8 @@ export default function SignIn(props) {
 
   const LOGIN_URL = process.env.REACT_APP_LOGIN_HEROKU;
 
+  axios.defaults.baseURL = process.env.REACT_APP_URL;
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -45,14 +47,14 @@ export default function SignIn(props) {
     e.preventDefault();
     const user = await axios({
       method: "POST",
-      url: LOGIN_URL,
+      url: "/user/login",
       data: {
         email: email,
         password: password,
       },
     });
     localStorage.setItem("token", user.data.accessToken);
-    return <Redirect to="/todos" />;
+    return <Redirect to="react-todo/#/todos" />;
   };
 
   axios.interceptors.response.use(

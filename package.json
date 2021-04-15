@@ -11,6 +11,7 @@
     "@testing-library/user-event": "^12.8.3",
     "axios": "^0.21.1",
     "dotenv": "^8.2.0",
+    "env-cmd": "^10.1.0",
     "import-env": "^1.1.1",
     "jwt-decode": "^3.1.2",
     "react": "^17.0.1",
