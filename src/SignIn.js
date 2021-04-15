@@ -33,9 +33,7 @@ const useStyles = makeStyles((theme) => ({
 export default function SignIn(props) {
   const classes = useStyles();
 
-  const LOGIN_URL = process.env.REACT_APP_LOGIN_HEROKU;
-
-  axios.defaults.baseURL = process.env.REACT_APP_URL;
+  axios.defaults.baseURL = "https://backend-serv-app.herokuapp.com/";
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");

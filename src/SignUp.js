@@ -43,7 +43,7 @@ export default function SignUp(props) {
   const [errMessage, setErrMessage] = useState("");
   const [isError, setIsError] = useState(false);
 
-  axios.defaults.baseURL = process.env.REACT_APP_URL;
+  axios.defaults.baseURL = "https://backend-serv-app.herokuapp.com/";
 
   const register = async (e) => {
     e.preventDefault();
