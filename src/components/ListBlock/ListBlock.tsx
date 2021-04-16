@@ -6,19 +6,38 @@ import Checkbox from "@material-ui/core/Checkbox";
 import IconButton from "@material-ui/core/IconButton";
 import DeleteIcon from "@material-ui/icons/Delete";
 import TextField from "@material-ui/core/TextField";
+import React from "react";
 
 import "./listblock.css";
 
-export default function ListBlock(props) {
+interface todoInterface{
+  id:string,
+  done:boolean,
+  name:string,
+  createdAt:string,
+}
+
+interface ListBlockProps{
+  handlerCheckingCheckBox:(item:todoInterface, index:string) => void,
+  handlerEscapeEdition:(e:React.KeyboardEvent<HTMLDivElement>, index:string) => void,
+  handlerEditText:(e:React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement> | React.KeyboardEvent<HTMLDivElement>, index:string) => void,
+  handlerDeleteItem:(index:string) => void,
+  isEdit: string,
+  setIsEdit:React.Dispatch<React.SetStateAction<string>>,
+  todos:todoInterface[]
+}
+
+
+export default function ListBlock(props:ListBlockProps) {
   return (
     <div className="list">
-      <List width="100%">
-        {props.todos.map((todo) => (
+      <List>
+        {props.todos.map((todo: todoInterface) => (
           <ListItem key={todo.id}>
             <ListItemIcon>
               <Checkbox
                 checked={todo.done}
-                onClick={(e) => props.handlerCheckingCheckBox(e, todo.id)}
+                onClick={(e) => props.handlerCheckingCheckBox(todo, todo.id)}
                 color="primary"
               />
             </ListItemIcon>
@@ -32,9 +51,9 @@ export default function ListBlock(props) {
               <TextField
                 className="edit-input"
                 onKeyDown={(e) => props.handlerEscapeEdition(e, todo.id)}
-                onChange={(e) => props.handlerEditText(e)}
+                onChange={(e) => props.handlerEditText(e, todo.id)}
                 onKeyPress={(e) => {
-                  props.handlerEditText(e, todo.id);
+                  props.handlerEditText(e, todo.id)
                 }}
               />
             ) : null}

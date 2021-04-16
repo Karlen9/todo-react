@@ -17,7 +17,7 @@ export default function ToDoList(props) {
   const [inputText, setInputText] = useState("");
   const [editInput, setEditInput] = useState("");
   const [todos, setTodos] = useState([]);
-  const [status, setStatus] = useState(null);
+  const [status, setStatus] = (useState < boolean) | (null > null);
   const [currPage, setCurrPage] = useState(1);
   const [amountOfPages, setAmountOfPages] = useState(1);
   const [sortBy, setSortBy] = useState("asc");

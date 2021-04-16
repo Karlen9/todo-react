@@ -1,26 +1,31 @@
 import "./filtering.css";
+import React from "react";
 
-export default function Filtering(props) {
+interface FilteringProps{
+  setStatus:React.Dispatch<React.SetStateAction<boolean | null>>
+}
+
+export default function Filtering({setStatus}:FilteringProps) {
   return (
     <div>
       <div className="selection-bar">
         <button
           className="button all-button"
-          onClick={() => props.setStatus(null)}
+          onClick={() => setStatus(null)}
           value="all"
         >
           All
         </button>
         <button
           className="button done-button"
-          onClick={() => props.setStatus(true)}
+          onClick={() => setStatus(true)}
           value="done"
         >
           Done
         </button>
         <button
           className="button undone-button"
-          onClick={() => props.setStatus(false)}
+          onClick={() => setStatus(false)}
           value="undone"
         >
           Undone
