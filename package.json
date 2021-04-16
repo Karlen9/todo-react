@@ -19,6 +19,7 @@
     "react-icons": "^4.2.0",
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.3",
+    "typescript": "^4.2.4",
     "web-vitals": "^1.1.1"
   },
   "scripts": {
@@ -49,6 +50,9 @@
   },
   "homepage": "https://karlen9.github.io/todo-react/",
   "devDependencies": {
+    "@types/react": "^17.0.3",
+    "@types/react-native": "^0.64.2",
+    "@types/react-router-dom": "^5.1.7",
     "gh-pages": "^3.1.0"
   }
 }
