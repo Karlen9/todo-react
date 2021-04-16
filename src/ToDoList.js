@@ -1,15 +1,16 @@
 //imports
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { useHistory } from "react-router";
+
+import { Snackbar } from "@material-ui/core";
+import Alert from "@material-ui/lab/Alert";
+
 import Filtering from "./components/Filtering/Filtering";
 import InputField from "./components/InputField/InputField";
 import ListBlock from "./components/ListBlock/ListBlock";
 import Sorting from "./components/Sorting/Sorting";
 import Pages from "./components/Pages/Pages";
-import { Snackbar } from "@material-ui/core";
-import Alert from "@material-ui/lab/Alert";
-import { Redirect, Route } from "react-router";
-
 import "./ToDoList.css";
 
 export default function ToDoList(props) {
@@ -24,21 +25,22 @@ export default function ToDoList(props) {
   const [isError, setIsError] = useState(false);
   const [isEdit, setIsEdit] = useState("");
   const [amountOfTasks, setAmountOfTasks] = useState(0);
+  let history = useHistory();
 
-  const REST_API_URL = process.env.REACT_APP_BASE_HEROKU;
-  const REST_API_URL_GET = process.env.REACT_APP_GET_HEROKU;
+  const REST_API_URL = process.env.REACT_APP_URL;
 
-  axios.defaults.baseURL = REST_API_URL;
-
+  const axiosCustom = axios.create({
+    baseURL: REST_API_URL,
+    headers: { "auth-token": localStorage.getItem("token") },
+  });
   async function getItem(sort, filter, pagination) {
-    const { data } = await axios.get(REST_API_URL_GET, {
+    const { data } = await axiosCustom({
+      method: "GET",
+      url: "/get",
       params: {
         order: sort,
         filterBy: filter,
         page: pagination,
-      },
-      headers: {
-        "auth-token": localStorage.getItem("token"),
       },
     });
 
@@ -48,18 +50,15 @@ export default function ToDoList(props) {
   }
 
   async function editItem(item) {
-    await axios({
+    await axiosCustom({
       method: "PATCH",
-      url: "/task/patch",
+      url: "/patch",
       params: {
         id: item.id,
       },
       data: {
         name: item.name,
         done: item.done,
-      },
-      headers: {
-        "auth-token": localStorage.getItem("token"),
       },
     });
     getItem(sortBy, status, currPage);
@@ -124,19 +123,15 @@ export default function ToDoList(props) {
 
   const handlerSubmitTodo = (e) => {
     async function postItemRequest() {
-      await axios({
+      await axiosCustom({
         method: "POST",
-        url: "/task/post",
+        url: "/post",
         data: {
           name: inputText,
           done: false,
         },
-        headers: {
-          "auth-token": localStorage.getItem("token"),
-        },
       });
       getItem(sortBy, status, currPage);
-      console.log("posted");
     }
     postItemRequest();
   };
@@ -159,14 +154,11 @@ export default function ToDoList(props) {
     const deletingItem = todos.find((todo) => todo.id === index);
 
     async function deleteItem() {
-      await axios({
+      await axiosCustom({
         method: "DELETE",
-        url: "/task/delete",
+        url: "/delete",
         params: {
           id: deletingItem.id,
-        },
-        headers: {
-          "auth-token": localStorage.getItem("token"),
         },
       });
       getItem(sortBy, status, currPage);
@@ -182,7 +174,7 @@ export default function ToDoList(props) {
   const signOut = (e) => {
     e.preventDefault = false;
     localStorage.removeItem("token");
-    return <Redirect to="/todos" />;
+    history.push("/login");
   };
 
   axios.interceptors.response.use(
@@ -199,11 +191,8 @@ export default function ToDoList(props) {
   );
 
   const redirectToLogIn = () => {
-    if (
-      errMessage === "Token is invalid, please log in" ||
-      errMessage === "Invalid Token"
-    ) {
-      return <Redirect to="/login" />;
+    if (errMessage === "Invalid Token") {
+      history.push("/login");
     }
   };
 
@@ -213,7 +202,7 @@ export default function ToDoList(props) {
 
   useEffect(() => {
     if (!localStorage.getItem("token")) {
-      return <Redirect to="/login" />;
+      history.push("/login");
     }
     getItem(sortBy, status, currPage);
   }, [currPage, status, amountOfPages, sortBy]);
@@ -227,12 +216,10 @@ export default function ToDoList(props) {
       <h1>ToDo List</h1>
       <InputField handlerInputText={handlerInputText} inputText={inputText} />
 
-      {amountOfTasks >= 1 ? (
-        <div className="wrapper">
-          <Filtering setStatus={setStatus} />
-          <Sorting setSortBy={setSortBy} />
-        </div>
-      ) : null}
+      <div className="wrapper">
+        <Filtering setStatus={setStatus} />
+        <Sorting setSortBy={setSortBy} />
+      </div>
 
       <ListBlock
         setIsEdit={setIsEdit}

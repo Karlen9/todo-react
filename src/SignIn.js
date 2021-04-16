@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Redirect } from "react-router";
+import { useHistory } from "react-router-dom";
 
 import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
@@ -31,9 +31,13 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function SignIn(props) {
-  const classes = useStyles();
+  const REST_API_URL = process.env.REACT_APP_URL;
 
-  const LOGIN_URL = process.env.REACT_APP_LOGIN_HEROKU;
+  const axiosCustom = axios.create({
+    baseURL: REST_API_URL,
+  });
+  const classes = useStyles();
+  let history = useHistory();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -43,16 +47,17 @@ export default function SignIn(props) {
 
   const login = async (e) => {
     e.preventDefault();
-    const user = await axios({
+    const user = await axiosCustom({
       method: "POST",
-      url: LOGIN_URL,
+      url: "/login",
       data: {
         email: email,
         password: password,
       },
     });
     localStorage.setItem("token", user.data.accessToken);
-    return <Redirect to="/todos" />;
+    history.push("/todos");
+    //return <Redirect to="react-todo#/todos" />;
   };
 
   axios.interceptors.response.use(
@@ -112,7 +117,7 @@ export default function SignIn(props) {
             </Button>
             <Grid container>
               <Grid item>
-                <Link href="/register" variant="body2">
+                <Link href="react-todos#/register" variant="body2">
                   {"Don't have an account? Sign Up"}
                 </Link>
               </Grid>

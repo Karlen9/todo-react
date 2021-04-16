@@ -5,27 +5,21 @@ import {
   HashRouter as Router,
   Switch,
   Route,
-  HashRouter,
+  BrowserRouter,
 } from "react-router-dom";
 
 export default function App() {
   return (
     <div className="App">
-      <HashRouter basename="/login">
+      <BrowserRouter basename="/login">
         <Router>
           <Switch>
-            <Route path="/todos">
-              <ToDoList />
-            </Route>
-            <Route path="/login">
-              <SignIn />
-            </Route>
-            <Route path="/register">
-              <SignUp />
-            </Route>
+            <Route path="/todos" component={ToDoList}></Route>
+            <Route path="/login" component={SignIn}></Route>
+            <Route path="/register" component={SignUp}></Route>
           </Switch>
         </Router>
-      </HashRouter>
+      </BrowserRouter>
     </div>
   );
 }
