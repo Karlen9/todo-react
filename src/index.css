@@ -1,48 +1,48 @@
 * {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: "Poppins", sans-serif;
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+	font-family: 'Poppins', sans-serif;
 }
 
 .App {
-  background-color: #fff;
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+	background-color: #fff;
+	min-height: 100vh;
+	display: flex;
+	justify-content: center;
+	align-items: center;
 }
 
 .main-wrapper {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
 }
 
 .main-section {
-  background-color: #fff;
-  display: flex;
-  align-items: center;
-  padding: 40px;
-  flex-direction: column;
-  border-radius: 30px;
-  /* margin-top: -400px; */
+	background-color: #fff;
+	display: flex;
+	align-items: center;
+	padding: 40px;
+	flex-direction: column;
+	border-radius: 30px;
+	/* margin-top: -400px; */
 }
 
 .todolist {
-  font-family: "Poppins", sans-serif;
+	font-family: 'Poppins', sans-serif;
 }
 
 .main-section h1 {
-  margin-top: 20px;
-  margin-bottom: 10px;
+	margin-top: 20px;
+	margin-bottom: 10px;
 }
 
 .todo-item {
-  padding: 0.2rem 5rem 0.2rem 0.5rem;
+	padding: 0.2rem 5rem 0.2rem 0.5rem;
 }
 
 .MuiFormControl-root {
-  width: 100%;
+	width: 100%;
 }
